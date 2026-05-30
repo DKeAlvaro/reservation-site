@@ -468,6 +468,7 @@ Submitted: ${new Date().toLocaleString()}
                         access_key: WEB3FORMS_ACCESS_KEY,
                         subject: `New reservation — ${data.name}, ${data.date}`,
                         email: BUSINESS_EMAIL,
+                        replyto: data.email,
                         from_name: data.name,
                         message: message,
                         ...data
