@@ -6,25 +6,21 @@
     <title>Reserve Your Table</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #dbeafe;
-            --success: #16a34a;
-            --success-light: #dcfce7;
-            --error: #dc2626;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
+            --black: #0a0a0a;
+            --white: #fafafa;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #e5e5e5;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-700: #404040;
+            --gray-800: #262626;
+            --gray-900: #171717;
         }
 
         * {
@@ -35,91 +31,96 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--gray-800);
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 480px;
             margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
+            padding: 80px 24px;
         }
 
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-
-        .header-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            margin-bottom: 48px;
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
         }
 
         .header p {
-            font-size: 16px;
-            opacity: 0.9;
+            font-size: 15px;
+            color: var(--gray-500);
+            font-weight: 400;
         }
 
-        .form-section {
-            padding: 30px;
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
+        .field label {
+            font-size: 13px;
+            font-weight: 500;
             color: var(--gray-700);
-            margin-bottom: 8px;
+            letter-spacing: 0.01em;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .field input,
+        .field select,
+        .field textarea {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            font-size: 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
             font-family: inherit;
-            transition: all 0.2s;
-            background: var(--gray-50);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+            color: var(--black);
+            background-color: var(--white);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
             outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
-        .form-group textarea {
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--black);
+            box-shadow: 0 0 0 1px var(--black);
+        }
+
+        .field textarea {
             resize: vertical;
             min-height: 100px;
         }
 
-        .form-row {
+        .field select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23737373' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
@@ -127,138 +128,144 @@
 
         .submit-btn {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
-            color: white;
+            padding: 14px 24px;
+            background-color: var(--black);
+            color: var(--white);
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+            margin-top: 8px;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -10px rgba(37, 99, 235, 0.5);
+            background-color: var(--gray-800);
         }
 
         .submit-btn:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
 
         .submit-btn:disabled {
-            opacity: 0.6;
+            background-color: var(--gray-300);
             cursor: not-allowed;
             transform: none;
         }
 
         .footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray-500);
-            font-size: 14px;
+            margin-top: 64px;
+            padding-top: 24px;
+            border-top: 1px solid var(--gray-200);
         }
 
-        .success-message {
+        .footer p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .footer a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success State */
+        .success {
             display: none;
             text-align: center;
-            padding: 60px 30px;
+            padding: 80px 0;
         }
 
-        .success-message.show {
+        .success.visible {
             display: block;
         }
 
         .success-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 24px;
+            border: 2px solid var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .success-message h2 {
+        .success-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--black);
+        }
+
+        .success h2 {
             font-size: 24px;
-            color: var(--gray-800);
+            font-weight: 500;
             margin-bottom: 12px;
+            letter-spacing: -0.01em;
         }
 
-        .success-message p {
+        .success p {
+            font-size: 15px;
             color: var(--gray-500);
-            margin-bottom: 24px;
+            margin-bottom: 32px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .back-btn {
+            display: inline-block;
             padding: 12px 24px;
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: none;
+            background: none;
+            border: 1px solid var(--gray-200);
             border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
+            font-family: inherit;
+            color: var(--black);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: border-color 0.15s ease;
         }
 
         .back-btn:hover {
-            background: var(--gray-200);
+            border-color: var(--black);
         }
 
-        .error-text {
-            color: var(--error);
-            font-size: 13px;
-            margin-top: 6px;
-            display: none;
+        /* Validation */
+        .field.error input,
+        .field.error select,
+        .field.error textarea {
+            border-color: #dc2626;
         }
 
-        .form-group.error input,
-        .form-group.error textarea,
-        .form-group.error select {
-            border-color: var(--error);
-        }
-
-        .form-group.error .error-text {
+        .field.error .error-msg {
             display: block;
         }
 
-        .availability-notice {
-            background: var(--primary-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .availability-notice-icon {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .availability-notice p {
-            font-size: 14px;
-            color: var(--primary-dark);
-            line-height: 1.5;
+        .error-msg {
+            display: none;
+            font-size: 12px;
+            color: #dc2626;
+            margin-top: 2px;
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-
-            .header {
-                padding: 30px 20px;
+            .container {
+                padding: 60px 20px;
             }
 
             .header h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
 
-            .form-section {
-                padding: 20px;
-            }
-
-            .form-row {
+            .row {
                 grid-template-columns: 1fr;
             }
         }
@@ -266,193 +273,187 @@
 </head>
 <body>
     <div class="container">
-        <div class="card">
+        <div id="formView">
             <div class="header">
-                <div class="header-icon">🍽️</div>
-                <h1>Reserve Your Table</h1>
-                <p>We'd love to have you. Book your spot below!</p>
+                <h1>Reserve a table</h1>
+                <p>Fill in the details below and we'll confirm your reservation via email.</p>
             </div>
 
-            <div class="form-section">
-                <div class="availability-notice">
-                    <span class="availability-notice-icon">ℹ️</span>
-                    <p>After submitting, you'll receive a confirmation email. Reservations are subject to availability.</p>
+            <form id="reservationForm" class="form">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required>
+                    <span class="error-msg">Please enter your name</span>
                 </div>
 
-                <form id="reservationForm">
-                    <div class="form-group">
-                        <label for="name">Full Name *</label>
-                        <input type="text" id="name" name="name" placeholder="John Doe" required>
-                        <span class="error-text">Please enter your name</span>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    <span class="error-msg">Please enter a valid email</span>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                        <span class="error-msg">Select a date</span>
                     </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                        <span class="error-text">Please enter a valid email</span>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="date">Date *</label>
-                            <input type="date" id="date" name="date" required>
-                            <span class="error-text">Please select a date</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="time">Time *</label>
-                            <select id="time" name="time" required>
-                                <option value="">Select time</option>
-                                <option value="12:00">12:00 PM</option>
-                                <option value="12:30">12:30 PM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="13:30">1:30 PM</option>
-                                <option value="14:00">2:00 PM</option>
-                                <option value="18:00">6:00 PM</option>
-                                <option value="18:30">6:30 PM</option>
-                                <option value="19:00">7:00 PM</option>
-                                <option value="19:30">7:30 PM</option>
-                                <option value="20:00">8:00 PM</option>
-                                <option value="20:30">8:30 PM</option>
-                                <option value="21:00">9:00 PM</option>
-                            </select>
-                            <span class="error-text">Please select a time</span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="guests">Number of Guests *</label>
-                        <select id="guests" name="guests" required>
-                            <option value="">Select party size</option>
-                            <option value="1">1 Person</option>
-                            <option value="2">2 People</option>
-                            <option value="3">3 People</option>
-                            <option value="4">4 People</option>
-                            <option value="5">5 People</option>
-                            <option value="6">6 People</option>
-                            <option value="7">7 People</option>
-                            <option value="8">8 People</option>
-                            <option value="9">9+ People (Call to confirm)</option>
+                    <div class="field">
+                        <label for="time">Time</label>
+                        <select id="time" name="time" required>
+                            <option value="" disabled selected>Select time</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="12:30">12:30 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="13:30">1:30 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="18:30">6:30 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="19:30">7:30 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="20:30">8:30 PM</option>
+                            <option value="21:00">9:00 PM</option>
                         </select>
-                        <span class="error-text">Please select party size</span>
+                        <span class="error-msg">Select a time</span>
                     </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone Number (Optional)</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="requests">Special Requests (Optional)</label>
-                        <textarea id="requests" name="requests" placeholder="Allergies, high chair, celebrations..."></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        Reserve Now →
-                    </button>
-                </form>
-
-                <div class="success-message" id="successMessage">
-                    <div class="success-icon">🎉</div>
-                    <h2>Reservation Received!</h2>
-                    <p>Thank you! We've received your reservation request. You'll receive a confirmation email shortly.</p>
-                    <button class="back-btn" onclick="resetForm()">Make Another Reservation</button>
                 </div>
-            </div>
+
+                <div class="field">
+                    <label for="guests">Party size</label>
+                    <select id="guests" name="guests" required>
+                        <option value="" disabled selected>Number of guests</option>
+                        <option value="1">1 person</option>
+                        <option value="2">2 people</option>
+                        <option value="3">3 people</option>
+                        <option value="4">4 people</option>
+                        <option value="5">5 people</option>
+                        <option value="6">6 people</option>
+                        <option value="7">7 people</option>
+                        <option value="8">8+ people</option>
+                    </select>
+                    <span class="error-msg">Select party size</span>
+                </div>
+
+                <div class="field">
+                    <label for="phone">Phone <span style="color: var(--gray-400); font-weight: 400;">(optional)</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
+                </div>
+
+                <div class="field">
+                    <label for="requests">Special requests <span style="color: var(--gray-400); font-weight: 400;">(optional)</span></label>
+                    <textarea id="requests" name="requests" placeholder="Dietary restrictions, celebrations, seating preferences..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Reserve</button>
+            </form>
 
             <div class="footer">
-                <p>Questions? Call us at <strong>(555) 123-4567</strong></p>
+                <p>Questions? <a href="mailto:alvaro.fake7@gmail.com">Get in touch</a></p>
             </div>
+        </div>
+
+        <div id="successView" class="success">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2>Reservation received</h2>
+            <p>We've sent a confirmation to your email. We'll be in touch shortly.</p>
+            <button class="back-btn" onclick="showForm()">Make another reservation</button>
         </div>
     </div>
 
     <script>
         // ============================================
-        // 🔧 CONFIGURATION - Replace with your details
+        // Configuration
         // ============================================
         const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
         const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
+
         // ============================================
-
+        // Elements
+        // ============================================
         const form = document.getElementById('reservationForm');
-        const successMessage = document.getElementById('successMessage');
+        const formView = document.getElementById('formView');
+        const successView = document.getElementById('successView');
         const submitBtn = form.querySelector('.submit-btn');
-
-        // Set minimum date to today
         const dateInput = document.getElementById('date');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
 
-        // Set maximum date to 3 months from now
+        // ============================================
+        // Date constraints
+        // ============================================
+        const today = new Date().toISOString().split('T')[0];
         const maxDate = new Date();
         maxDate.setMonth(maxDate.getMonth() + 3);
-        dateInput.setAttribute('max', maxDate.toISOString().split('T')[0]);
 
-        // Form validation
-        function validateForm() {
-            let isValid = true;
-            const requiredFields = form.querySelectorAll('[required]');
+        dateInput.min = today;
+        dateInput.max = maxDate.toISOString().split('T')[0];
 
-            requiredFields.forEach(field => {
-                const formGroup = field.closest('.form-group');
+        // ============================================
+        // Validation
+        // ============================================
+        function validate() {
+            let valid = true;
+            const required = form.querySelectorAll('[required]');
+
+            required.forEach(field => {
+                const fieldDiv = field.closest('.field');
                 if (!field.value.trim()) {
-                    formGroup.classList.add('error');
-                    isValid = false;
+                    fieldDiv.classList.add('error');
+                    valid = false;
                 } else {
-                    formGroup.classList.remove('error');
+                    fieldDiv.classList.remove('error');
                 }
             });
 
-            // Validate email format
+            // Email format
             const email = document.getElementById('email');
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (email.value && !emailRegex.test(email.value)) {
-                email.closest('.form-group').classList.add('error');
-                isValid = false;
+                email.closest('.field').classList.add('error');
+                valid = false;
             }
 
-            return isValid;
+            return valid;
         }
 
-        // Remove error on input
+        // Clear errors on input
         form.querySelectorAll('input, select, textarea').forEach(field => {
             field.addEventListener('input', function() {
-                this.closest('.form-group').classList.remove('error');
+                this.closest('.field').classList.remove('error');
             });
         });
 
-        // Handle form submission
+        // ============================================
+        // Form submission
+        // ============================================
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            if (!validateForm()) {
-                return;
-            }
+            if (!validate()) return;
 
-            // Disable button and show loading
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '⏳ Sending...';
+            submitBtn.textContent = 'Sending...';
 
-            // Prepare form data
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
 
-            // Format the email content
-            const emailContent = `
-New Reservation Request
-========================
+            const message = `
+Reservation Details
+───────────────────
 
 Name: ${data.name}
 Email: ${data.email}
-Phone: ${data.phone || 'Not provided'}
-
 Date: ${data.date}
 Time: ${data.time}
-Party Size: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
+Party: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
+Phone: ${data.phone || 'Not provided'}
+Notes: ${data.requests || 'None'}
 
-Special Requests: ${data.requests || 'None'}
-
-========================
+───────────────────
 Submitted: ${new Date().toLocaleString()}
             `.trim();
 
@@ -465,12 +466,10 @@ Submitted: ${new Date().toLocaleString()}
                     },
                     body: JSON.stringify({
                         access_key: WEB3FORMS_ACCESS_KEY,
-                        subject: `New Reservation: ${data.name} - ${data.date}`,
+                        subject: `New reservation — ${data.name}, ${data.date}`,
                         email: BUSINESS_EMAIL,
-                        name: data.name,
-                        from_name: 'Reservation System',
-                        message: emailContent,
-                        // Also send individual fields for easy parsing
+                        from_name: data.name,
+                        message: message,
                         ...data
                     })
                 });
@@ -478,26 +477,28 @@ Submitted: ${new Date().toLocaleString()}
                 const result = await response.json();
 
                 if (result.success) {
-                    form.style.display = 'none';
-                    successMessage.classList.add('show');
+                    formView.style.display = 'none';
+                    successView.classList.add('visible');
                 } else {
                     throw new Error('Submission failed');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Something went wrong. Please try again or call us directly.');
+                alert('Something went wrong. Please try again or contact us directly.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Reserve Now →';
+                submitBtn.textContent = 'Reserve';
             }
         });
 
+        // ============================================
         // Reset form
-        function resetForm() {
+        // ============================================
+        function showForm() {
             form.reset();
-            form.style.display = 'block';
-            successMessage.classList.remove('show');
-            dateInput.setAttribute('min', today);
+            formView.style.display = 'block';
+            successView.classList.remove('visible');
+            dateInput.min = today;
         }
     </script>
 </body>
