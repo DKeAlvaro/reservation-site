@@ -372,6 +372,13 @@
         // ============================================
         const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
         const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
+        
+        // NOTE: Web3Forms sends notification to BUSINESS_EMAIL only.
+        // To enable auto-replies to visitors, you need to:
+        // 1. Go to https://web3forms.com/dashboard
+        // 2. Select your form
+        // 3. Enable "Auto-Reply" in settings
+        // 4. Configure the confirmation email template
 
         // ============================================
         // Elements
@@ -458,7 +465,8 @@ Submitted: ${new Date().toLocaleString()}
             `.trim();
 
             try {
-                const response = await fetch('https://api.web3forms.com/submit', {
+                // Send to business email (notification)
+                const businessResponse = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -468,16 +476,15 @@ Submitted: ${new Date().toLocaleString()}
                         access_key: WEB3FORMS_ACCESS_KEY,
                         subject: `New reservation — ${data.name}, ${data.date}`,
                         email: BUSINESS_EMAIL,
-                        replyto: data.email,
                         from_name: data.name,
                         message: message,
                         ...data
                     })
                 });
 
-                const result = await response.json();
+                const businessResult = await businessResponse.json();
 
-                if (result.success) {
+                if (businessResult.success) {
                     formView.style.display = 'none';
                     successView.classList.add('visible');
                 } else {
