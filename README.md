@@ -10,10 +10,6 @@ A clean, modern reservation landing page for your business. Built with HTML, CSS
 - ✅ **Form validation** on client side
 - 🔒 **No backend** - fully static, host on GitHub Pages
 
-## Live Demo
-
-[View Live Site](https://yourusername.github.io/reservation-site/)
-
 ## Quick Setup (5 minutes)
 
 ### 1. Get Your Free Web3Forms Key
@@ -34,10 +30,19 @@ const BUSINESS_EMAIL = 'your@email.com'; // Your email to receive reservations
 ### 3. Deploy to GitHub Pages
 
 1. Create a new repository on GitHub
-2. Upload all files from this folder
+2. Upload all files from this folder (exclude `server.py` - it's only for local testing)
 3. Go to **Settings → Pages**
 4. Select **main** branch as source
 5. Your site will be live at `https://yourusername.github.io/reservation-site/`
+
+### 4. Test Locally
+
+```bash
+# Start local server
+python3 server.py
+
+# Open http://localhost:8080 in your browser
+```
 
 ## How It Works
 
