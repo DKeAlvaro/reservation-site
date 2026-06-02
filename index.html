@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserve Your Table</title>
+    <title>Reservar una mesa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -275,82 +275,82 @@
     <div class="container">
         <div id="formView">
             <div class="header">
-                <h1>Reserve a table</h1>
-                <p>Fill in the details below and we'll confirm your reservation via email.</p>
+                <h1>Reservar una mesa</h1>
+                <p>Complete los datos a continuación y confirmaremos su reserva por correo electrónico.</p>
             </div>
 
             <form id="reservationForm" class="form">
                 <div class="field">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="John Doe" required>
-                    <span class="error-msg">Please enter your name</span>
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" name="name" placeholder="Juan Pérez" required>
+                    <span class="error-msg">Por favor, introduzca su nombre</span>
                 </div>
 
                 <div class="field">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                    <span class="error-msg">Please enter a valid email</span>
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" placeholder="juan@ejemplo.com" required>
+                    <span class="error-msg">Por favor, introduzca un correo electrónico válido</span>
                 </div>
 
                 <div class="row">
                     <div class="field">
-                        <label for="date">Date</label>
+                        <label for="date">Fecha</label>
                         <input type="date" id="date" name="date" required>
-                        <span class="error-msg">Select a date</span>
+                        <span class="error-msg">Seleccione una fecha</span>
                     </div>
 
                     <div class="field">
-                        <label for="time">Time</label>
+                        <label for="time">Hora</label>
                         <select id="time" name="time" required>
-                            <option value="" disabled selected>Select time</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="12:30">12:30 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="13:30">1:30 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                            <option value="18:30">6:30 PM</option>
-                            <option value="19:00">7:00 PM</option>
-                            <option value="19:30">7:30 PM</option>
-                            <option value="20:00">8:00 PM</option>
-                            <option value="20:30">8:30 PM</option>
-                            <option value="21:00">9:00 PM</option>
+                            <option value="" disabled selected>Seleccionar hora</option>
+                            <option value="12:00">12:00</option>
+                            <option value="12:30">12:30</option>
+                            <option value="13:00">13:00</option>
+                            <option value="13:30">13:30</option>
+                            <option value="14:00">14:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00">21:00</option>
                         </select>
-                        <span class="error-msg">Select a time</span>
+                        <span class="error-msg">Seleccione una hora</span>
                     </div>
                 </div>
 
                 <div class="field">
-                    <label for="guests">Party size</label>
+                    <label for="guests">Número de personas</label>
                     <select id="guests" name="guests" required>
-                        <option value="" disabled selected>Number of guests</option>
-                        <option value="1">1 person</option>
-                        <option value="2">2 people</option>
-                        <option value="3">3 people</option>
-                        <option value="4">4 people</option>
-                        <option value="5">5 people</option>
-                        <option value="6">6 people</option>
-                        <option value="7">7 people</option>
-                        <option value="8">8+ people</option>
+                        <option value="" disabled selected>Número de personas</option>
+                        <option value="1">1 persona</option>
+                        <option value="2">2 personas</option>
+                        <option value="3">3 personas</option>
+                        <option value="4">4 personas</option>
+                        <option value="5">5 personas</option>
+                        <option value="6">6 personas</option>
+                        <option value="7">7 personas</option>
+                        <option value="8">8+ personas</option>
                     </select>
-                    <span class="error-msg">Select party size</span>
+                    <span class="error-msg">Seleccione el número de personas</span>
                 </div>
 
                 <div class="field">
-                    <label for="phone">Phone <span style="color: var(--gray-400); font-weight: 400;">(optional)</span></label>
-                    <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
+                    <label for="phone">Teléfono <span style="color: var(--gray-400); font-weight: 400;">(opcional)</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000">
                 </div>
 
                 <div class="field">
-                    <label for="requests">Special requests <span style="color: var(--gray-400); font-weight: 400;">(optional)</span></label>
-                    <textarea id="requests" name="requests" placeholder="Dietary restrictions, celebrations, seating preferences..."></textarea>
+                    <label for="requests">Peticiones especiales <span style="color: var(--gray-400); font-weight: 400;">(opcional)</span></label>
+                    <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones, preferencias de asiento..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Reserve</button>
+                <button type="submit" class="submit-btn">Reservar</button>
             </form>
 
             <div class="footer">
-                <p>Questions? <a href="mailto:alvaro.fake7@gmail.com">Get in touch</a></p>
+                <p>¿Preguntas? <a href="mailto:alvaro.fake7@gmail.com">Contáctenos</a></p>
             </div>
         </div>
 
@@ -360,9 +360,9 @@
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
             </div>
-            <h2>Reservation received</h2>
-            <p>We've sent a confirmation to your email. We'll be in touch shortly.</p>
-            <button class="back-btn" onclick="showForm()">Make another reservation</button>
+            <h2>Reserva recibida</h2>
+            <p>Hemos enviado una confirmación a su correo electrónico. Nos pondremos en contacto con usted en breve.</p>
+            <button class="back-btn" onclick="showForm()">Hacer otra reserva</button>
         </div>
     </div>
 
