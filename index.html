@@ -6,7 +6,7 @@
     <title>Reservar una mesa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=optional" rel="stylesheet">
     <link rel="stylesheet" href="anzest_styles.css">
 </head>
 <body>
@@ -14,77 +14,85 @@
         <div id="formView">
             <div class="header">
                 <h1>Reservar una mesa</h1>
-                <p>Complete los datos a continuación y confirmaremos su reserva por correo electrónico.</p>
+                <div class="steps">
+                    <div class="step-indicator active" data-step="1"></div>
+                    <div class="step-indicator" data-step="2"></div>
+                    <div class="step-indicator" data-step="3"></div>
+                </div>
             </div>
 
             <form id="reservationForm" class="form">
-                <div class="field">
-                    <label for="name">Nombre</label>
-                    <input type="text" id="name" name="name" placeholder="Juan Pérez" required>
-                    <span class="error-msg">Por favor, introduzca su nombre</span>
-                </div>
-
-                <div class="field">
-                    <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" name="email" placeholder="juan@ejemplo.com" required>
-                    <span class="error-msg">Por favor, introduzca un correo electrónico válido</span>
-                </div>
-
-                <div class="row">
+                <!-- Step 1: Date + Guests -->
+                <div class="form-step active" id="step1">
                     <div class="field">
-                        <label for="date">Fecha</label>
+                        <label for="date">¿Qué día?</label>
                         <input type="date" id="date" name="date" required>
                         <span class="error-msg">Seleccione una fecha</span>
                     </div>
 
                     <div class="field">
-                        <label for="time">Hora</label>
-                        <select id="time" name="time" required>
-                            <option value="" disabled selected>Seleccionar hora</option>
-                            <option value="12:00">12:00</option>
-                            <option value="12:30">12:30</option>
-                            <option value="13:00">13:00</option>
-                            <option value="13:30">13:30</option>
-                            <option value="14:00">14:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="18:30">18:30</option>
-                            <option value="19:00">19:00</option>
-                            <option value="19:30">19:30</option>
-                            <option value="20:00">20:00</option>
-                            <option value="20:30">20:30</option>
-                            <option value="21:00">21:00</option>
+                        <label for="guests">¿Cuántas personas?</label>
+                        <select id="guests" name="guests" required>
+                            <option value="" disabled selected>Seleccionar</option>
+                            <option value="1">1 persona</option>
+                            <option value="2">2 personas</option>
+                            <option value="3">3 personas</option>
+                            <option value="4">4 personas</option>
+                            <option value="5">5 personas</option>
+                            <option value="6">6 personas</option>
+                            <option value="7">7 personas</option>
+                            <option value="8">8+ personas</option>
                         </select>
+                        <span class="error-msg">Seleccione el número de personas</span>
+                    </div>
+
+                    <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(2)">Siguiente</button>
+                </div>
+
+                <!-- Step 2: Time -->
+                <div class="form-step" id="step2">
+                    <div class="field">
+                        <label>¿A qué hora?</label>
+                        <div class="time-grid" id="timeGrid"></div>
+                        <input type="hidden" id="time" name="time" required>
                         <span class="error-msg">Seleccione una hora</span>
+                    </div>
+
+                    <div class="step-nav">
+                        <button type="button" class="btn btn-outline" onclick="goToStep(1)">Atrás</button>
+                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(3)">Siguiente</button>
                     </div>
                 </div>
 
-                <div class="field">
-                    <label for="guests">Número de personas</label>
-                    <select id="guests" name="guests" required>
-                        <option value="" disabled selected>Número de personas</option>
-                        <option value="1">1 persona</option>
-                        <option value="2">2 personas</option>
-                        <option value="3">3 personas</option>
-                        <option value="4">4 personas</option>
-                        <option value="5">5 personas</option>
-                        <option value="6">6 personas</option>
-                        <option value="7">7 personas</option>
-                        <option value="8">8+ personas</option>
-                    </select>
-                    <span class="error-msg">Seleccione el número de personas</span>
-                </div>
+                <!-- Step 3: Contact info -->
+                <div class="form-step" id="step3">
+                    <div class="field">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" name="name" placeholder="Juan Pérez" required>
+                        <span class="error-msg">Por favor, introduzca su nombre</span>
+                    </div>
 
-                <div class="field">
-                    <label for="phone">Teléfono <span style="color: var(--gray-400); font-weight: 400;">(opcional)</span></label>
-                    <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000">
-                </div>
+                    <div class="field">
+                        <label for="email">Correo electrónico <span class="optional-tag">(opcional)</span></label>
+                        <input type="email" id="email" name="email" placeholder="juan@ejemplo.com">
+                        <span class="error-msg">Por favor, introduzca un correo electrónico válido</span>
+                    </div>
 
-                <div class="field">
-                    <label for="requests">Peticiones especiales <span style="color: var(--gray-400); font-weight: 400;">(opcional)</span></label>
-                    <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones, preferencias de asiento..."></textarea>
-                </div>
+                    <div class="field">
+                        <label for="phone">Teléfono <span class="optional-tag">(opcional)</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000">
+                    </div>
 
-                <button type="submit" class="btn btn-dark submit-btn">Reservar</button>
+                    <div class="field">
+                        <label for="requests">Peticiones especiales <span class="optional-tag">(opcional)</span></label>
+                        <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones..."></textarea>
+                    </div>
+
+                    <div class="step-nav">
+                        <button type="button" class="btn btn-outline" onclick="goToStep(2)">Atrás</button>
+                        <button type="submit" class="btn btn-dark submit-btn">Reservar</button>
+                    </div>
+                </div>
             </form>
 
             <div class="footer">
@@ -110,13 +118,6 @@
         // ============================================
         const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
         const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
-        
-        // NOTE: Web3Forms sends notification to BUSINESS_EMAIL only.
-        // To enable auto-replies to visitors, you need to:
-        // 1. Go to https://web3forms.com/dashboard
-        // 2. Select your form
-        // 3. Enable "Auto-Reply" in settings
-        // 4. Configure the confirmation email template
 
         // ============================================
         // Elements
@@ -124,8 +125,10 @@
         const form = document.getElementById('reservationForm');
         const formView = document.getElementById('formView');
         const successView = document.getElementById('successView');
-        const submitBtn = form.querySelector('.submit-btn');
         const dateInput = document.getElementById('date');
+        const timeInput = document.getElementById('time');
+        const timeGrid = document.getElementById('timeGrid');
+        let currentStep = 1;
 
         // ============================================
         // Date constraints
@@ -138,11 +141,93 @@
         dateInput.max = maxDate.toISOString().split('T')[0];
 
         // ============================================
-        // Validation
+        // Build time grid: 8:00 to 20:00, 30min intervals
         // ============================================
-        function validate() {
+        function buildTimeGrid() {
+            timeGrid.innerHTML = '';
+            for (let h = 8; h <= 20; h++) {
+                for (let m = 0; m < 60; m += 30) {
+                    if (h === 20 && m > 0) break;
+                    const hh = String(h).padStart(2, '0');
+                    const mm = String(m).padStart(2, '0');
+                    const label = `${hh}:${mm}`;
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'time-btn';
+                    btn.textContent = label;
+                    btn.dataset.time = label;
+
+                    btn.addEventListener('click', function () {
+                        timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        timeInput.value = this.dataset.time;
+                        timeInput.closest('.field').classList.remove('error');
+                    });
+
+                    timeGrid.appendChild(btn);
+                }
+            }
+        }
+        buildTimeGrid();
+
+        // ============================================
+        // Step navigation
+        // ============================================
+        function goToStep(step) {
+            if (step > currentStep && !validateStep(currentStep)) return;
+
+            const currentEl = document.getElementById('step' + currentStep);
+            const nextEl = document.getElementById('step' + step);
+
+            // Smooth cross-fade and slide transition
+            currentEl.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+            currentEl.style.opacity = '0';
+            currentEl.style.transform = step > currentStep ? 'translateY(-8px)' : 'translateY(8px)';
+
+            document.querySelectorAll('.step-indicator').forEach(ind => {
+                const s = parseInt(ind.dataset.step);
+                ind.classList.toggle('active', s <= step);
+                ind.classList.toggle('completed', s < step);
+            });
+
+            setTimeout(() => {
+                currentEl.classList.remove('active');
+                currentEl.style.opacity = '';
+                currentEl.style.transform = '';
+                currentEl.style.transition = '';
+
+                nextEl.classList.add('entering');
+                nextEl.style.opacity = '0';
+                nextEl.style.transform = step > currentStep ? 'translateY(8px)' : 'translateY(-8px)';
+                nextEl.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+
+                // Force reflow
+                nextEl.offsetHeight;
+
+                nextEl.classList.remove('entering');
+                nextEl.classList.add('active');
+                nextEl.style.opacity = '1';
+                nextEl.style.transform = 'translateY(0)';
+
+                setTimeout(() => {
+                    nextEl.style.opacity = '';
+                    nextEl.style.transform = '';
+                    nextEl.style.transition = '';
+                }, 150);
+
+            }, 150);
+
+            currentStep = step;
+        }
+
+        // ============================================
+        // Validation per step
+        // ============================================
+        function validateStep(step) {
             let valid = true;
-            const required = form.querySelectorAll('[required]');
+            const stepEl = document.getElementById('step' + step);
+            const required = stepEl.querySelectorAll('[required]');
 
             required.forEach(field => {
                 const fieldDiv = field.closest('.field');
@@ -154,12 +239,14 @@
                 }
             });
 
-            // Email format
+            // Email format if provided
             const email = document.getElementById('email');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email.value && !emailRegex.test(email.value)) {
-                email.closest('.field').classList.add('error');
-                valid = false;
+            if (step === 3 && email.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    email.closest('.field').classList.add('error');
+                    valid = false;
+                }
             }
 
             return valid;
@@ -167,7 +254,7 @@
 
         // Clear errors on input
         form.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function() {
+            field.addEventListener('input', function () {
                 this.closest('.field').classList.remove('error');
             });
         });
@@ -175,13 +262,14 @@
         // ============================================
         // Form submission
         // ============================================
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            if (!validate()) return;
+            if (!validateStep(3)) return;
 
+            const submitBtn = form.querySelector('#step3 .submit-btn[type="submit"]');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+            submitBtn.textContent = 'Enviando...';
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
@@ -191,7 +279,7 @@ Reservation Details
 ───────────────────
 
 Name: ${data.name}
-Email: ${data.email}
+Email: ${data.email || 'Not provided'}
 Date: ${data.date}
 Time: ${data.time}
 Party: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
@@ -203,7 +291,6 @@ Submitted: ${new Date().toLocaleString()}
             `.trim();
 
             try {
-                // Send to business email (notification)
                 const businessResponse = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: {
@@ -223,8 +310,28 @@ Submitted: ${new Date().toLocaleString()}
                 const businessResult = await businessResponse.json();
 
                 if (businessResult.success) {
-                    formView.style.display = 'none';
-                    successView.classList.add('visible');
+                    formView.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                    formView.style.opacity = '0';
+                    formView.style.transform = 'translateY(-10px)';
+
+                    setTimeout(() => {
+                        formView.style.display = 'none';
+                        successView.classList.add('entering');
+                        // reflow
+                        successView.offsetHeight;
+                        successView.classList.add('visible');
+
+                        // Animate checkmark path
+                        const path = successView.querySelector('svg polyline');
+                        if (path) {
+                            path.style.strokeDasharray = '50';
+                            path.style.strokeDashoffset = '50';
+                            path.style.transition = 'none';
+                            path.offsetHeight; // reflow
+                            path.style.transition = 'stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s';
+                            path.style.strokeDashoffset = '0';
+                        }
+                    }, 250);
                 } else {
                     throw new Error('Submission failed');
                 }
@@ -233,7 +340,7 @@ Submitted: ${new Date().toLocaleString()}
                 alert('Something went wrong. Please try again or contact us directly.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Reserve';
+                submitBtn.textContent = 'Reservar';
             }
         });
 
@@ -241,10 +348,45 @@ Submitted: ${new Date().toLocaleString()}
         // Reset form
         // ============================================
         function showForm() {
-            form.reset();
-            formView.style.display = 'block';
-            successView.classList.remove('visible');
-            dateInput.min = today;
+            successView.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+            successView.style.opacity = '0';
+            successView.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                successView.classList.remove('visible', 'entering');
+                successView.style.opacity = '';
+                successView.style.transform = '';
+                successView.style.transition = '';
+
+                form.reset();
+                formView.style.display = 'block';
+                formView.style.opacity = '0';
+                formView.style.transform = 'translateY(-10px)';
+                formView.offsetHeight; // reflow
+                formView.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+                formView.style.opacity = '1';
+                formView.style.transform = 'translateY(0)';
+
+                dateInput.min = today;
+
+                // Reset steps
+                document.querySelectorAll('.form-step').forEach(s => {
+                    s.classList.remove('active', 'entering');
+                    s.style.opacity = '';
+                    s.style.transform = '';
+                    s.style.transition = '';
+                });
+                document.getElementById('step1').classList.add('active');
+                document.querySelectorAll('.step-indicator').forEach(ind => {
+                    ind.classList.remove('active', 'completed');
+                });
+                document.querySelector('.step-indicator[data-step="1"]').classList.add('active');
+                currentStep = 1;
+
+                // Reset time selection
+                timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                timeInput.value = '';
+            }, 150);
         }
     </script>
 </body>
