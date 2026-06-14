@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inauguración Anzest Friends & Family</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-code/index.css">
     <link rel="stylesheet" href="anzest_styles.css">
 </head>
 <body>
     <div class="form-card">
         <div id="formView">
-            <div class="header">
+            <div class="header" id="formHeader">
                 <h1>¿Cuándo vas a visitarnos?</h1>
-                <p class="header-subtitle">Es importante que vengas en la fecha y hora seleccionadas para así poder disfrutar de una mejor experiencia de inauguración, conocer a fondo el proyecto y disfrutar de los beneficios y sorpresas del día.</p>
-                <div class="progress-track">
+                <div class="progress-track" id="progressTrack">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
@@ -20,17 +21,11 @@
             <form id="reservationForm" class="form">
                 <!-- Step 1: Date -->
                 <div class="form-step active" id="step1">
+                    <p class="header-subtitle" style="margin-top: -16px; margin-bottom: 24px;">Es importante que vengas en la fecha y hora seleccionadas para así poder disfrutar de una mejor experiencia de inauguración, conocer a fondo el proyecto y disfrutar de los beneficios y sorpresas del día.</p>
                     <div class="field">
                         <label for="date">¿Qué día?</label>
                         <div class="date-field-wrapper">
                             <input type="date" id="date" name="date" required>
-                        </div>
-                        <div class="date-stamp" id="dateStamp" aria-hidden="true">
-                            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="2.5"/>
-                                <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="1"/>
-                                <text x="60" y="68" text-anchor="middle" font-family="Cascadia Code, Consolas, monospace" font-size="18" font-weight="700" fill="currentColor" letter-spacing="1">ANZEST</text>
-                            </svg>
                         </div>
                         <span class="error-msg">Seleccione una fecha</span>
                     </div>
@@ -102,17 +97,17 @@
                 <div class="form-step" id="step6">
                     <div class="field">
                         <label for="phone">Teléfono <span class="optional-tag">(opcional)</span></label>
-                        <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000">
+                        <input type="tel" id="phone" name="phone">
                     </div>
 
                     <div class="field">
                         <label for="invitedBy">Invitado por <span class="optional-tag">(opcional)</span></label>
-                        <input type="text" id="invitedBy" name="invitedBy" placeholder="¿Quién es tu friend o family?">
+                        <input type="text" id="invitedBy" name="invitedBy">
                     </div>
 
                     <div class="field">
                         <label for="requests">Peticiones o información especial <span class="optional-tag">(opcional)</span></label>
-                        <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones, accesibilidad..."></textarea>
+                        <textarea id="requests" name="requests"></textarea>
                     </div>
 
                     <div class="step-nav">
@@ -150,18 +145,40 @@
         const formView = document.getElementById('formView');
         const successView = document.getElementById('successView');
         const dateInput = document.getElementById('date');
-        const dateStamp = document.getElementById('dateStamp');
         const timeInput = document.getElementById('time');
         const timeGrid = document.getElementById('timeGrid');
         const progressFill = document.getElementById('progressFill');
+        const formHeader = document.getElementById('formHeader');
+        const progressTrack = document.getElementById('progressTrack');
         let currentStep = 1;
 
+        // Initialize focus for step 1
+        setTimeout(() => focusStepInput(1), 300);
+
         // ============================================
-        // Progress bar
+        // Progress bar and Title
         // ============================================
+        const stepTitles = {
+            1: '¿Cuándo vas a visitarnos?',
+            2: 'Detalles de la reserva',
+            3: 'Detalles de la reserva',
+            4: 'Tus datos',
+            5: 'Tus datos',
+            6: 'Información adicional'
+        };
+
         function updateProgress(step) {
             const pct = (step / TOTAL_STEPS) * 100;
             progressFill.style.width = pct + '%';
+            
+            const titleEl = document.querySelector('#formHeader h1');
+            if (titleEl.textContent !== stepTitles[step]) {
+                titleEl.style.opacity = '0';
+                setTimeout(() => {
+                    titleEl.textContent = stepTitles[step];
+                    titleEl.style.opacity = '1';
+                }, 200);
+            }
         }
         updateProgress(1);
 
@@ -175,27 +192,7 @@
         dateInput.min = today;
         dateInput.max = maxDate.toISOString().split('T')[0];
 
-        dateInput.addEventListener('input', function () {
-            if (this.value) {
-                dateStamp.classList.add('visible');
-            } else {
-                dateStamp.classList.remove('visible');
-            }
-        });
 
-        // Auto-advance when date is picked
-        dateInput.addEventListener('change', function () {
-            if (this.value && currentStep === 1) {
-                setTimeout(() => goToStep(2), 350);
-            }
-        });
-
-        // Auto-advance when guests are selected
-        document.getElementById('guests').addEventListener('change', function () {
-            if (this.value && currentStep === 2) {
-                setTimeout(() => goToStep(3), 350);
-            }
-        });
 
         // ============================================
         // Build time grid: 8:00 to 20:00, 30min intervals
@@ -220,10 +217,6 @@
                         this.classList.add('selected');
                         timeInput.value = this.dataset.time;
                         timeInput.closest('.field').classList.remove('error');
-                        // Auto-advance after time selection
-                        if (currentStep === 3) {
-                            setTimeout(() => goToStep(4), 350);
-                        }
                     });
 
                     timeGrid.appendChild(btn);
@@ -468,7 +461,6 @@ Submitted: ${new Date().toLocaleString()}
                 formView.style.transform = 'translateY(0)';
 
                 dateInput.min = today;
-                dateStamp.classList.remove('visible');
 
                 // Reset all steps
                 document.querySelectorAll('.form-step').forEach(s => {
