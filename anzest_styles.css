@@ -15,7 +15,7 @@
     --color-background-light: #F8F8F8; /* Assumed for light backgrounds */
 
     /* Typography */
-    --font-family-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; /* Common modern sans-serif */
+    --font-family-main: 'Cascadia Code', 'Cascadia Mono', Consolas, 'Courier New', monospace;
     --font-size-base: 16px;
     --font-size-sm: 14px;
     --font-size-lg: 18px;
@@ -150,14 +150,17 @@ a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 24px; /* Adjusted for better visual balance */
+    gap: var(--spacing-sm);
+    padding: 12px 24px;
     border-radius: var(--border-radius-md);
     font-weight: var(--font-weight-semibold);
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     border: none;
     font-size: var(--font-size-sm);
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-primary {
@@ -166,7 +169,7 @@ a:hover {
 }
 
 .btn-primary:hover {
-    background-color: darken(var(--color-accent-beige), 5%); /* Placeholder for darker shade */
+    background-color: #ece7db;
 }
 
 .btn-secondary {
@@ -187,10 +190,14 @@ a:hover {
 
 .btn-dark:hover {
     background-color: #2a1a10;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 17, 10, 0.2);
 }
 
 .btn-dark:active {
     background-color: #110b06;
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 .btn-dark:focus-visible {
@@ -212,6 +219,7 @@ a:hover {
 .btn-outline:hover {
     background-color: var(--color-primary);
     color: var(--color-secondary);
+    transform: translateY(-1px);
 }
 
 /* Product Card */
@@ -337,6 +345,18 @@ a:hover {
     max-width: 480px;
     margin: 0 auto;
     padding: 80px var(--spacing-lg);
+    animation: formCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes formCardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .header {
@@ -356,6 +376,14 @@ a:hover {
     font-weight: var(--font-weight-regular);
 }
 
+.header-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin-top: var(--spacing-sm);
+    margin-bottom: 0;
+}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -368,11 +396,32 @@ a:hover {
     gap: var(--spacing-sm);
 }
 
+/* Staggered entrance for fields within a step */
+.form-step.active .field:nth-child(1) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both; }
+.form-step.active .field:nth-child(2) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
+.form-step.active .field:nth-child(3) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+.form-step.active .field:nth-child(4) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
+.form-step.active .field:nth-child(5) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.20s both; }
+.form-step.active .step-nav { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
+.form-step.active .submit-btn:only-child { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+
+@keyframes fieldReveal {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .field label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     color: var(--gray-700);
     letter-spacing: 0.01em;
+    transition: color 0.2s ease;
 }
 
 .field input,
@@ -386,20 +435,31 @@ a:hover {
     font-family: inherit;
     color: var(--color-text-main);
     background-color: var(--color-secondary);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     outline: none;
 }
 
 .field input::placeholder,
 .field textarea::placeholder {
     color: var(--gray-400);
+    transition: color 0.2s ease;
+}
+
+.field input:focus::placeholder,
+.field textarea:focus::placeholder {
+    color: var(--gray-300);
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 1px var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Highlight the label when the field is focused */
+.field:focus-within label {
+    color: var(--color-text-main);
 }
 
 .field textarea {
@@ -415,6 +475,37 @@ a:hover {
     padding-right: 40px;
 }
 
+.date-field-wrapper {
+    position: relative;
+}
+
+.date-field-wrapper input[type="date"] {
+    padding-right: var(--spacing-md);
+}
+
+.date-stamp {
+    width: 64px;
+    height: 64px;
+    margin: var(--spacing-md) auto 0;
+    transform: rotate(-14deg) scale(0.4);
+    opacity: 0;
+    color: #b91c1c;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+}
+
+.date-stamp.visible {
+    transform: rotate(-14deg) scale(1);
+    opacity: 0.85;
+}
+
+.date-stamp svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.05));
+}
+
 .row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -426,36 +517,50 @@ a:hover {
     margin-top: var(--spacing-sm);
 }
 
-.submit-btn:active {
-    transform: scale(0.98);
+.submit-btn:active:not(:disabled) {
+    transform: scale(0.98) translateY(0);
+    box-shadow: none;
 }
 
 .submit-btn:disabled {
     background-color: var(--gray-300);
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
-/* Step indicators */
-.steps {
-    display: flex;
-    gap: 8px;
-    margin-top: var(--spacing-lg);
+/* Loading spinner */
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
 }
 
-.step-indicator {
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Progress bar */
+.progress-track {
+    width: 100%;
     height: 3px;
-    flex: 1;
     background-color: var(--color-border);
     border-radius: 2px;
+    margin-top: var(--spacing-lg);
+    overflow: hidden;
 }
 
-.step-indicator.active {
+.progress-fill {
+    height: 100%;
     background-color: var(--gray-800);
-}
-
-.step-indicator.completed {
-    background-color: var(--gray-400);
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Form steps */
@@ -525,21 +630,25 @@ a:hover {
     font-weight: var(--font-weight-medium);
     color: var(--color-text-main);
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
 }
 
 .time-btn:hover {
     border-color: var(--gray-700);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .time-btn:active {
-    transform: scale(0.96);
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
 }
 
 .time-btn.selected {
     background-color: var(--color-accent-brown);
     color: var(--color-secondary);
     border-color: var(--color-accent-brown);
+    box-shadow: 0 2px 8px rgba(26, 17, 10, 0.25);
 }
 
 .footer {
@@ -594,6 +703,21 @@ a:hover {
     justify-content: center;
 }
 
+.success.visible .success-icon {
+    animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes successPop {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .success-icon svg {
     width: 24px;
     height: 24px;
@@ -605,6 +729,29 @@ a:hover {
     font-weight: var(--font-weight-medium);
     margin-bottom: var(--spacing-sm);
     letter-spacing: -0.01em;
+}
+
+.success.visible h2 {
+    animation: fadeSlideUp 0.4s ease-out 0.3s both;
+}
+
+.success.visible p {
+    animation: fadeSlideUp 0.4s ease-out 0.4s both;
+}
+
+.success.visible .back-btn {
+    animation: fadeSlideUp 0.4s ease-out 0.5s both;
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .success p {
@@ -625,6 +772,15 @@ a:hover {
 .field.error select,
 .field.error textarea {
     border-color: #dc2626;
+    animation: fieldShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes fieldShake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-3px); }
+    40%, 60% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
 }
 
 .field.error .error-msg {
@@ -717,5 +873,14 @@ a:hover {
 
     .btn {
         padding: 10px 16px;
+    }
+}
+
+/* Accessibility: respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

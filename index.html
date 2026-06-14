@@ -3,33 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservar una mesa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=optional" rel="stylesheet">
+    <title>Inauguración Anzest Friends & Family</title>
     <link rel="stylesheet" href="anzest_styles.css">
 </head>
 <body>
     <div class="form-card">
         <div id="formView">
             <div class="header">
-                <h1>Reservar una mesa</h1>
-                <div class="steps">
-                    <div class="step-indicator active" data-step="1"></div>
-                    <div class="step-indicator" data-step="2"></div>
-                    <div class="step-indicator" data-step="3"></div>
+                <h1>¿Cuándo vas a visitarnos?</h1>
+                <p class="header-subtitle">Es importante que vengas en la fecha y hora seleccionadas para así poder disfrutar de una mejor experiencia de inauguración, conocer a fondo el proyecto y disfrutar de los beneficios y sorpresas del día.</p>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
 
             <form id="reservationForm" class="form">
-                <!-- Step 1: Date + Guests -->
+                <!-- Step 1: Date -->
                 <div class="form-step active" id="step1">
                     <div class="field">
                         <label for="date">¿Qué día?</label>
-                        <input type="date" id="date" name="date" required>
+                        <div class="date-field-wrapper">
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="date-stamp" id="dateStamp" aria-hidden="true">
+                            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                                <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="1"/>
+                                <text x="60" y="68" text-anchor="middle" font-family="Cascadia Code, Consolas, monospace" font-size="18" font-weight="700" fill="currentColor" letter-spacing="1">ANZEST</text>
+                            </svg>
+                        </div>
                         <span class="error-msg">Seleccione una fecha</span>
                     </div>
+                    <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(2)">Siguiente</button>
+                </div>
 
+                <!-- Step 2: Guests -->
+                <div class="form-step" id="step2">
                     <div class="field">
                         <label for="guests">¿Cuántas personas?</label>
                         <select id="guests" name="guests" required>
@@ -40,64 +49,78 @@
                             <option value="4">4 personas</option>
                             <option value="5">5 personas</option>
                             <option value="6">6 personas</option>
-                            <option value="7">7 personas</option>
-                            <option value="8">8+ personas</option>
                         </select>
                         <span class="error-msg">Seleccione el número de personas</span>
                     </div>
-
-                    <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(2)">Siguiente</button>
-                </div>
-
-                <!-- Step 2: Time -->
-                <div class="form-step" id="step2">
-                    <div class="field">
-                        <label>¿A qué hora?</label>
-                        <div class="time-grid" id="timeGrid"></div>
-                        <input type="hidden" id="time" name="time" required>
-                        <span class="error-msg">Seleccione una hora</span>
-                    </div>
-
                     <div class="step-nav">
                         <button type="button" class="btn btn-outline" onclick="goToStep(1)">Atrás</button>
                         <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(3)">Siguiente</button>
                     </div>
                 </div>
 
-                <!-- Step 3: Contact info -->
+                <!-- Step 3: Time -->
                 <div class="form-step" id="step3">
+                    <div class="field">
+                        <label>¿A qué hora?</label>
+                        <div class="time-grid" id="timeGrid"></div>
+                        <input type="hidden" id="time" name="time" required>
+                        <span class="error-msg">Seleccione una hora</span>
+                    </div>
+                    <div class="step-nav">
+                        <button type="button" class="btn btn-outline" onclick="goToStep(2)">Atrás</button>
+                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(4)">Siguiente</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Name -->
+                <div class="form-step" id="step4">
                     <div class="field">
                         <label for="name">Nombre</label>
                         <input type="text" id="name" name="name" placeholder="Juan Pérez" required>
                         <span class="error-msg">Por favor, introduzca su nombre</span>
                     </div>
+                    <div class="step-nav">
+                        <button type="button" class="btn btn-outline" onclick="goToStep(3)">Atrás</button>
+                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(5)">Siguiente</button>
+                    </div>
+                </div>
 
+                <!-- Step 5: Email -->
+                <div class="form-step" id="step5">
                     <div class="field">
-                        <label for="email">Correo electrónico <span class="optional-tag">(opcional)</span></label>
-                        <input type="email" id="email" name="email" placeholder="juan@ejemplo.com">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="juan@ejemplo.com" required>
                         <span class="error-msg">Por favor, introduzca un correo electrónico válido</span>
                     </div>
+                    <div class="step-nav">
+                        <button type="button" class="btn btn-outline" onclick="goToStep(4)">Atrás</button>
+                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(6)">Siguiente</button>
+                    </div>
+                </div>
 
+                <!-- Step 6: Optional details -->
+                <div class="form-step" id="step6">
                     <div class="field">
                         <label for="phone">Teléfono <span class="optional-tag">(opcional)</span></label>
                         <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000">
                     </div>
 
                     <div class="field">
-                        <label for="requests">Peticiones especiales <span class="optional-tag">(opcional)</span></label>
-                        <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones..."></textarea>
+                        <label for="invitedBy">Invitado por <span class="optional-tag">(opcional)</span></label>
+                        <input type="text" id="invitedBy" name="invitedBy" placeholder="¿Quién es tu friend o family?">
+                    </div>
+
+                    <div class="field">
+                        <label for="requests">Peticiones o información especial <span class="optional-tag">(opcional)</span></label>
+                        <textarea id="requests" name="requests" placeholder="Restricciones alimentarias, celebraciones, accesibilidad..."></textarea>
                     </div>
 
                     <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(2)">Atrás</button>
+                        <button type="button" class="btn btn-outline" onclick="goToStep(5)">Atrás</button>
                         <button type="submit" class="btn btn-dark submit-btn">Reservar</button>
                     </div>
                 </div>
             </form>
-
-            <div class="footer">
-                <p>¿Preguntas? <a href="mailto:alvaro.fake7@gmail.com">Contáctenos</a></p>
-            </div>
         </div>
 
         <div id="successView" class="success">
@@ -118,6 +141,7 @@
         // ============================================
         const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
         const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
+        const TOTAL_STEPS = 6;
 
         // ============================================
         // Elements
@@ -126,9 +150,20 @@
         const formView = document.getElementById('formView');
         const successView = document.getElementById('successView');
         const dateInput = document.getElementById('date');
+        const dateStamp = document.getElementById('dateStamp');
         const timeInput = document.getElementById('time');
         const timeGrid = document.getElementById('timeGrid');
+        const progressFill = document.getElementById('progressFill');
         let currentStep = 1;
+
+        // ============================================
+        // Progress bar
+        // ============================================
+        function updateProgress(step) {
+            const pct = (step / TOTAL_STEPS) * 100;
+            progressFill.style.width = pct + '%';
+        }
+        updateProgress(1);
 
         // ============================================
         // Date constraints
@@ -139,6 +174,28 @@
 
         dateInput.min = today;
         dateInput.max = maxDate.toISOString().split('T')[0];
+
+        dateInput.addEventListener('input', function () {
+            if (this.value) {
+                dateStamp.classList.add('visible');
+            } else {
+                dateStamp.classList.remove('visible');
+            }
+        });
+
+        // Auto-advance when date is picked
+        dateInput.addEventListener('change', function () {
+            if (this.value && currentStep === 1) {
+                setTimeout(() => goToStep(2), 350);
+            }
+        });
+
+        // Auto-advance when guests are selected
+        document.getElementById('guests').addEventListener('change', function () {
+            if (this.value && currentStep === 2) {
+                setTimeout(() => goToStep(3), 350);
+            }
+        });
 
         // ============================================
         // Build time grid: 8:00 to 20:00, 30min intervals
@@ -163,6 +220,10 @@
                         this.classList.add('selected');
                         timeInput.value = this.dataset.time;
                         timeInput.closest('.field').classList.remove('error');
+                        // Auto-advance after time selection
+                        if (currentStep === 3) {
+                            setTimeout(() => goToStep(4), 350);
+                        }
                     });
 
                     timeGrid.appendChild(btn);
@@ -172,24 +233,52 @@
         buildTimeGrid();
 
         // ============================================
+        // Auto-focus the input when entering a step
+        // ============================================
+        function focusStepInput(step) {
+            const stepEl = document.getElementById('step' + step);
+            const input = stepEl.querySelector('input:not([type="hidden"]), select, textarea');
+            if (input) {
+                setTimeout(() => input.focus(), 300);
+            }
+        }
+
+        // ============================================
+        // Enter key advances to next step on text inputs
+        // ============================================
+        document.querySelectorAll('.form-step input[type="text"], .form-step input[type="email"], .form-step input[type="tel"]').forEach(input => {
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const stepEl = this.closest('.form-step');
+                    const stepNum = parseInt(stepEl.id.replace('step', ''));
+                    if (stepNum < TOTAL_STEPS) {
+                        goToStep(stepNum + 1);
+                    } else {
+                        // Last step: submit the form
+                        form.requestSubmit();
+                    }
+                }
+            });
+        });
+
+        // ============================================
         // Step navigation
         // ============================================
         function goToStep(step) {
             if (step > currentStep && !validateStep(currentStep)) return;
+            if (step < 1 || step > TOTAL_STEPS) return;
 
             const currentEl = document.getElementById('step' + currentStep);
             const nextEl = document.getElementById('step' + step);
+            const direction = step > currentStep ? 1 : -1;
 
             // Smooth cross-fade and slide transition
-            currentEl.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+            currentEl.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
             currentEl.style.opacity = '0';
-            currentEl.style.transform = step > currentStep ? 'translateY(-8px)' : 'translateY(8px)';
+            currentEl.style.transform = `translateY(${-8 * direction}px)`;
 
-            document.querySelectorAll('.step-indicator').forEach(ind => {
-                const s = parseInt(ind.dataset.step);
-                ind.classList.toggle('active', s <= step);
-                ind.classList.toggle('completed', s < step);
-            });
+            updateProgress(step);
 
             setTimeout(() => {
                 currentEl.classList.remove('active');
@@ -199,8 +288,8 @@
 
                 nextEl.classList.add('entering');
                 nextEl.style.opacity = '0';
-                nextEl.style.transform = step > currentStep ? 'translateY(8px)' : 'translateY(-8px)';
-                nextEl.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+                nextEl.style.transform = `translateY(${8 * direction}px)`;
+                nextEl.style.transition = 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 // Force reflow
                 nextEl.offsetHeight;
@@ -210,13 +299,19 @@
                 nextEl.style.opacity = '1';
                 nextEl.style.transform = 'translateY(0)';
 
+                // Scroll to form top on mobile
+                document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Auto-focus the input in the new step
+                focusStepInput(step);
+
                 setTimeout(() => {
                     nextEl.style.opacity = '';
                     nextEl.style.transform = '';
                     nextEl.style.transition = '';
-                }, 150);
+                }, 250);
 
-            }, 150);
+            }, 200);
 
             currentStep = step;
         }
@@ -232,6 +327,9 @@
             required.forEach(field => {
                 const fieldDiv = field.closest('.field');
                 if (!field.value.trim()) {
+                    // Remove and re-add error to retrigger the shake animation
+                    fieldDiv.classList.remove('error');
+                    void fieldDiv.offsetHeight;
                     fieldDiv.classList.add('error');
                     valid = false;
                 } else {
@@ -239,12 +337,14 @@
                 }
             });
 
-            // Email format if provided
-            const email = document.getElementById('email');
-            if (step === 3 && email.value) {
+            // Email format check (step 5 is the email step)
+            const emailField = stepEl.querySelector('#email');
+            if (emailField && emailField.value) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email.value)) {
-                    email.closest('.field').classList.add('error');
+                if (!emailRegex.test(emailField.value)) {
+                    emailField.closest('.field').classList.remove('error');
+                    void emailField.closest('.field').offsetHeight;
+                    emailField.closest('.field').classList.add('error');
                     valid = false;
                 }
             }
@@ -265,11 +365,11 @@
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            if (!validateStep(3)) return;
+            if (!validateStep(TOTAL_STEPS)) return;
 
-            const submitBtn = form.querySelector('#step3 .submit-btn[type="submit"]');
+            const submitBtn = form.querySelector('#step' + TOTAL_STEPS + ' .submit-btn[type="submit"]');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Enviando...';
+            submitBtn.innerHTML = '<span class="spinner"></span> Enviando...';
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
@@ -284,6 +384,7 @@ Date: ${data.date}
 Time: ${data.time}
 Party: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
 Phone: ${data.phone || 'Not provided'}
+Invited by: ${data.invitedBy || 'Not provided'}
 Notes: ${data.requests || 'None'}
 
 ───────────────────
@@ -317,7 +418,6 @@ Submitted: ${new Date().toLocaleString()}
                     setTimeout(() => {
                         formView.style.display = 'none';
                         successView.classList.add('entering');
-                        // reflow
                         successView.offsetHeight;
                         successView.classList.add('visible');
 
@@ -340,7 +440,7 @@ Submitted: ${new Date().toLocaleString()}
                 alert('Something went wrong. Please try again or contact us directly.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Reservar';
+                submitBtn.innerHTML = 'Reservar';
             }
         });
 
@@ -368,8 +468,9 @@ Submitted: ${new Date().toLocaleString()}
                 formView.style.transform = 'translateY(0)';
 
                 dateInput.min = today;
+                dateStamp.classList.remove('visible');
 
-                // Reset steps
+                // Reset all steps
                 document.querySelectorAll('.form-step').forEach(s => {
                     s.classList.remove('active', 'entering');
                     s.style.opacity = '';
@@ -377,10 +478,9 @@ Submitted: ${new Date().toLocaleString()}
                     s.style.transition = '';
                 });
                 document.getElementById('step1').classList.add('active');
-                document.querySelectorAll('.step-indicator').forEach(ind => {
-                    ind.classList.remove('active', 'completed');
-                });
-                document.querySelector('.step-indicator[data-step="1"]').classList.add('active');
+
+                // Reset progress
+                updateProgress(1);
                 currentStep = 1;
 
                 // Reset time selection
