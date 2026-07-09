@@ -139,9 +139,9 @@
         // ============================================
         // Configuration
         // ============================================
-        const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
-        const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzwQ_vLXSCey0rjZ8bVgD0NUO-4n1JshXr-3V1sP3w2z72Gk2JSAl_0sTJoQgFMErL_dA/exec';
         const TOTAL_STEPS = 6;
+        const MAX_PER_SLOT = 10;
 
         // ============================================
         // Elements
@@ -156,6 +156,8 @@
         const formHeader = document.getElementById('formHeader');
         const progressTrack = document.getElementById('progressTrack');
         let currentStep = 1;
+        let slotCounts = null;
+        let selectedBlock = null;
 
         // Initialize focus for step 1
         setTimeout(() => focusStepInput(1), 300);
@@ -197,38 +199,118 @@
         dateInput.min = today;
         dateInput.max = maxDate.toISOString().split('T')[0];
 
+        dateInput.addEventListener('change', function() {
+            if (this.value) {
+                fetchReservations(this.value);
+            }
+        });
 
-
-        // ============================================
-        // Build time grid: 8:00 to 20:00, 30min intervals
-        // ============================================
-        function buildTimeGrid() {
-            timeGrid.innerHTML = '';
-            for (let h = 8; h <= 20; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    if (h === 20 && m > 0) break;
-                    const hh = String(h).padStart(2, '0');
-                    const mm = String(m).padStart(2, '0');
-                    const label = `${hh}:${mm}`;
-
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'time-btn';
-                    btn.textContent = label;
-                    btn.dataset.time = label;
-
-                    btn.addEventListener('click', function () {
-                        timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
-                        this.classList.add('selected');
-                        timeInput.value = this.dataset.time;
-                        timeInput.closest('.field').classList.remove('error');
-                    });
-
-                    timeGrid.appendChild(btn);
+        async function fetchReservations(date) {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'counts', date: date })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    slotCounts = result.counts;
+                    refreshTimeView();
                 }
+            } catch (error) {
+                slotCounts = null;
+                refreshTimeView();
             }
         }
-        buildTimeGrid();
+
+
+
+        // ============================================
+        // Time blocks + slot grid with dot indicators
+        // ============================================
+        const TIME_BLOCKS = {
+            Manana: { label: 'Mañana', startH: 8, startM: 0, endH: 12, endM: 0 },
+            Tarde:   { label: 'Tarde',   startH: 12, startM: 30, endH: 16, endM: 0 },
+            Noche:   { label: 'Noche',   startH: 16, startM: 30, endH: 20, endM: 0 }
+        };
+
+        function animateTimeGridChange(className, html) {
+            timeGrid.classList.add('fade-out');
+            setTimeout(() => {
+                timeGrid.className = className;
+                timeGrid.innerHTML = html;
+                timeGrid.classList.remove('fade-out');
+            }, 200);
+        }
+
+        function showTimeBlocks() {
+            selectedBlock = null;
+            timeInput.value = '';
+            animateTimeGridChange('time-blocks', buildBlocksHTML());
+        }
+
+        function buildBlocksHTML() {
+            let html = '';
+            for (const [key, block] of Object.entries(TIME_BLOCKS)) {
+                html += `<button type="button" class="time-block-btn" data-block="${key}">${block.label}</button>`;
+            }
+            return html;
+        }
+
+        function renderBlockSlots(blockKey) {
+            selectedBlock = blockKey;
+            animateTimeGridChange('time-grid', buildSlotsHTML(blockKey));
+        }
+
+        function buildSlotsHTML(blockKey) {
+            const block = TIME_BLOCKS[blockKey];
+            const hasCounts = slotCounts !== null;
+            let html = `<button type="button" class="back-block-btn" id="backToBlocks">← ${block.label}</button>`;
+
+            for (let h = block.startH; h <= block.endH; h++) {
+                const mStart = (h === block.startH) ? block.startM : 0;
+                const mEnd = (h === block.endH) ? block.endM + 30 : 60;
+                for (let m = mStart; m < mEnd; m += 30) {
+                    const label = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+                    const slotCount = hasCounts ? (slotCounts[label] || 0) : 0;
+                    const isFull = hasCounts && slotCount >= MAX_PER_SLOT;
+
+                    html += `<button type="button" class="time-btn${isFull ? ' full' : ''}" data-time="${label}"${isFull ? ' disabled' : ''}>${label}</button>`;
+                }
+            }
+            return html;
+        }
+
+        function refreshTimeView() {
+            if (selectedBlock) {
+                renderBlockSlots(selectedBlock);
+            } else {
+                showTimeBlocks();
+            }
+        }
+
+        timeGrid.addEventListener('click', function(e) {
+            const blockBtn = e.target.closest('.time-block-btn');
+            if (blockBtn) {
+                renderBlockSlots(blockBtn.dataset.block);
+                return;
+            }
+
+            const backBtn = e.target.closest('#backToBlocks');
+            if (backBtn) {
+                showTimeBlocks();
+                return;
+            }
+
+            const timeBtn = e.target.closest('.time-btn:not(.full)');
+            if (timeBtn) {
+                timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                timeBtn.classList.add('selected');
+                timeInput.value = timeBtn.dataset.time;
+                timeInput.closest('.field').classList.remove('error');
+            }
+        });
+
+        showTimeBlocks();
 
         // ============================================
         // Auto-focus the input when entering a step
@@ -371,44 +453,18 @@
 
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-
-            const message = `
-Reservation Details
-───────────────────
-
-Name: ${data.name}
-Email: ${data.email || 'Not provided'}
-Date: ${data.date}
-Time: ${data.time}
-Party: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
-Phone: ${data.phone || 'Not provided'}
-Invited by: ${data.invitedBy || 'Not provided'}
-Notes: ${data.requests || 'None'}
-
-───────────────────
-Submitted: ${new Date().toLocaleString()}
-            `.trim();
+            data.action = 'submit';
+            data.maxPerSlot = MAX_PER_SLOT;
 
             try {
-                const businessResponse = await fetch('https://api.web3forms.com/submit', {
+                const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        access_key: WEB3FORMS_ACCESS_KEY,
-                        subject: `New reservation — ${data.name}, ${data.date}`,
-                        email: BUSINESS_EMAIL,
-                        from_name: data.name,
-                        message: message,
-                        ...data
-                    })
+                    body: JSON.stringify(data)
                 });
 
-                const businessResult = await businessResponse.json();
+                const result = await response.json();
 
-                if (businessResult.success) {
+                if (result.success) {
                     formView.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
                     formView.style.opacity = '0';
                     formView.style.transform = 'translateY(-10px)';
@@ -430,6 +486,13 @@ Submitted: ${new Date().toLocaleString()}
                             path.style.strokeDashoffset = '0';
                         }
                     }, 250);
+                } else if (result.error === 'full') {
+                    alert(result.message + '\n\nPor favor, selecciona otro horario.');
+                    goToStep(3);
+                    if (dateInput.value) fetchReservations(dateInput.value);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Reservar';
+                    return;
                 } else {
                     throw new Error('Submission failed');
                 }
@@ -483,6 +546,9 @@ Submitted: ${new Date().toLocaleString()}
                 // Reset time selection
                 timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
                 timeInput.value = '';
+                slotCounts = null;
+                selectedBlock = null;
+                refreshTimeView();
             }, 150);
         }
     </script>

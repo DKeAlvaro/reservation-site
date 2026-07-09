@@ -639,6 +639,12 @@ a:hover {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.time-grid.fade-out {
+    opacity: 0;
+    transform: translateY(-8px);
 }
 
 .time-btn {
@@ -651,7 +657,7 @@ a:hover {
     font-weight: var(--font-weight-medium);
     color: var(--color-text-main);
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .time-btn:hover {
@@ -665,6 +671,70 @@ a:hover {
     box-shadow: none;
 }
 
+.time-btn.full {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: var(--color-background-light);
+}
+
+.time-btn.full:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--color-border);
+}
+
+/* Time blocks */
+.time-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.time-blocks.fade-out {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.time-block-btn {
+    padding: 20px 24px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background: var(--color-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.time-block-btn:hover {
+    border-color: var(--gray-700);
+    background: var(--color-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.back-block-btn {
+    grid-column: 1 / -1;
+    padding: 0 0 10px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.15s ease;
+}
+
+.back-block-btn:hover {
+    color: var(--color-text-main);
+}
+
+/* Time grid transitions */
 .time-btn.selected {
     background-color: var(--color-accent-brown);
     color: var(--color-secondary);
@@ -1048,6 +1118,10 @@ a:hover {
         font-size: 13px;
     }
 
+    .time-block-btn {
+        padding: 16px 20px;
+    }
+
     .footer {
         margin-top: var(--spacing-xl);
     }
@@ -1069,6 +1143,11 @@ a:hover {
 
     .time-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .time-block-btn {
+        padding: 14px 18px;
+        font-size: var(--font-size-sm);
     }
 
     .btn {
