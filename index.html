@@ -3,483 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inauguración Anzest Friends & Family</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Anzest Friends & Family</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preload" href="images/logo-anzest.svg" as="image">
+    <link rel="preload" href="images/black-goat.svg" as="image">
+    <link rel="prefetch" href="reserva.html">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-code/index.css">
     <link rel="stylesheet" href="anzest_styles.css">
 </head>
 <body>
-    <div class="form-card">
-        <div id="formView">
-            <div class="header" id="formHeader">
-                <h1>¿Cuándo vas a visitarnos?</h1>
-                <div class="progress-track" id="progressTrack">
-                    <div class="progress-fill" id="progressFill"></div>
+    <div class="splash" id="splash">
+        <div class="splash-inner">
+            <div class="splash-visual" id="logoLink" onclick="navigateToReserva()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateToReserva()">
+                <div class="splash-img-wrap">
+                    <img class="splash-img" id="logoGif" src="images/logo-anzest.gif" alt="Anzest">
+                    <img class="splash-overlay" id="logoSvg" src="images/logo-anzest.svg" alt="Anzest">
                 </div>
             </div>
-
-            <form id="reservationForm" class="form">
-                <!-- Step 1: Date -->
-                <div class="form-step active" id="step1">
-                    <p class="header-subtitle" style="margin-top: -16px; margin-bottom: 24px;">Es importante que vengas en la fecha y hora seleccionadas para así poder disfrutar de una mejor experiencia de inauguración, conocer a fondo el proyecto y disfrutar de los beneficios y sorpresas del día.</p>
-                    <div class="field">
-                        <label for="date">¿Qué día?</label>
-                        <div class="date-field-wrapper">
-                            <input type="date" id="date" name="date" required>
-                        </div>
-                        <span class="error-msg">Seleccione una fecha</span>
-                    </div>
-                    <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(2)">Siguiente</button>
-                </div>
-
-                <!-- Step 2: Guests -->
-                <div class="form-step" id="step2">
-                    <div class="field">
-                        <label for="guests">¿Cuántas personas?</label>
-                        <select id="guests" name="guests" required>
-                            <option value="" disabled selected>Seleccionar</option>
-                            <option value="1">1 persona</option>
-                            <option value="2">2 personas</option>
-                            <option value="3">3 personas</option>
-                            <option value="4">4 personas</option>
-                            <option value="5">5 personas</option>
-                            <option value="6">6 personas</option>
-                        </select>
-                        <span class="error-msg">Seleccione el número de personas</span>
-                    </div>
-                    <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(1)">Atrás</button>
-                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(3)">Siguiente</button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Time -->
-                <div class="form-step" id="step3">
-                    <div class="field">
-                        <label>¿A qué hora?</label>
-                        <div class="time-grid" id="timeGrid"></div>
-                        <input type="hidden" id="time" name="time" required>
-                        <span class="error-msg">Seleccione una hora</span>
-                    </div>
-                    <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(2)">Atrás</button>
-                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(4)">Siguiente</button>
-                    </div>
-                </div>
-
-                <!-- Step 4: Name -->
-                <div class="form-step" id="step4">
-                    <div class="field">
-                        <label for="name">Nombre</label>
-                        <input type="text" id="name" name="name" placeholder="Juan Pérez" required>
-                        <span class="error-msg">Por favor, introduzca su nombre</span>
-                    </div>
-                    <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(3)">Atrás</button>
-                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(5)">Siguiente</button>
-                    </div>
-                </div>
-
-                <!-- Step 5: Email -->
-                <div class="form-step" id="step5">
-                    <div class="field">
-                        <label for="email">Correo electrónico</label>
-                        <input type="email" id="email" name="email" placeholder="juan@ejemplo.com" required>
-                        <span class="error-msg">Por favor, introduzca un correo electrónico válido</span>
-                    </div>
-                    <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(4)">Atrás</button>
-                        <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(6)">Siguiente</button>
-                    </div>
-                </div>
-
-                <!-- Step 6: Optional details -->
-                <div class="form-step" id="step6">
-                    <div class="field">
-                        <label for="phone">Teléfono <span class="optional-tag">(opcional)</span></label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-
-                    <div class="field">
-                        <label for="invitedBy">Invitado por <span class="optional-tag">(opcional)</span></label>
-                        <input type="text" id="invitedBy" name="invitedBy">
-                    </div>
-
-                    <div class="field">
-                        <label for="requests">Peticiones o información especial <span class="optional-tag">(opcional)</span></label>
-                        <textarea id="requests" name="requests"></textarea>
-                    </div>
-
-                    <div class="step-nav">
-                        <button type="button" class="btn btn-outline" onclick="goToStep(5)">Atrás</button>
-                        <button type="submit" class="btn btn-dark submit-btn">Reservar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div id="successView" class="success">
-            <div class="success-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-            </div>
-            <h2>Reserva recibida</h2>
-            <p>Hemos enviado una confirmación a su correo electrónico. Nos pondremos en contacto con usted en breve.</p>
-            <button class="btn btn-outline back-btn" onclick="showForm()">Hacer otra reserva</button>
+            <p class="splash-subtitle" id="subtitle">
+                <span class="splash-goat-wrap" id="goatWrap">
+                    <img class="splash-goat" id="goatGif" src="images/black-goat.gif" alt="">
+                    <img class="splash-goat goat-overlay" id="goatSvg" src="images/black-goat.svg" alt="">
+                </span>
+                Inauguración Friends &amp; Family
+            </p>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // Configuration
-        // ============================================
-        const WEB3FORMS_ACCESS_KEY = 'f8ceb5b7-c3b9-4b49-bc35-25c459c54213';
-        const BUSINESS_EMAIL = 'alvaro.fake7@gmail.com';
-        const TOTAL_STEPS = 6;
+        const ANIMATION_DURATION = 3430;
 
-        // ============================================
-        // Elements
-        // ============================================
-        const form = document.getElementById('reservationForm');
-        const formView = document.getElementById('formView');
-        const successView = document.getElementById('successView');
-        const dateInput = document.getElementById('date');
-        const timeInput = document.getElementById('time');
-        const timeGrid = document.getElementById('timeGrid');
-        const progressFill = document.getElementById('progressFill');
-        const formHeader = document.getElementById('formHeader');
-        const progressTrack = document.getElementById('progressTrack');
-        let currentStep = 1;
-
-        // Initialize focus for step 1
-        setTimeout(() => focusStepInput(1), 300);
-
-        // ============================================
-        // Progress bar and Title
-        // ============================================
-        const stepTitles = {
-            1: '¿Cuándo vas a visitarnos?',
-            2: 'Detalles de la reserva',
-            3: 'Detalles de la reserva',
-            4: 'Tus datos',
-            5: 'Tus datos',
-            6: 'Información adicional'
-        };
-
-        function updateProgress(step) {
-            const pct = (step / TOTAL_STEPS) * 100;
-            progressFill.style.width = pct + '%';
-            
-            const titleEl = document.querySelector('#formHeader h1');
-            if (titleEl.textContent !== stepTitles[step]) {
-                titleEl.style.opacity = '0';
-                setTimeout(() => {
-                    titleEl.textContent = stepTitles[step];
-                    titleEl.style.opacity = '1';
-                }, 200);
-            }
-        }
-        updateProgress(1);
-
-        // ============================================
-        // Date constraints
-        // ============================================
-        const today = new Date().toISOString().split('T')[0];
-        const maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 3);
-
-        dateInput.min = today;
-        dateInput.max = maxDate.toISOString().split('T')[0];
-
-
-
-        // ============================================
-        // Build time grid: 8:00 to 20:00, 30min intervals
-        // ============================================
-        function buildTimeGrid() {
-            timeGrid.innerHTML = '';
-            for (let h = 8; h <= 20; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    if (h === 20 && m > 0) break;
-                    const hh = String(h).padStart(2, '0');
-                    const mm = String(m).padStart(2, '0');
-                    const label = `${hh}:${mm}`;
-
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'time-btn';
-                    btn.textContent = label;
-                    btn.dataset.time = label;
-
-                    btn.addEventListener('click', function () {
-                        timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
-                        this.classList.add('selected');
-                        timeInput.value = this.dataset.time;
-                        timeInput.closest('.field').classList.remove('error');
-                    });
-
-                    timeGrid.appendChild(btn);
-                }
-            }
-        }
-        buildTimeGrid();
-
-        // ============================================
-        // Auto-focus the input when entering a step
-        // ============================================
-        function focusStepInput(step) {
-            const stepEl = document.getElementById('step' + step);
-            const input = stepEl.querySelector('input:not([type="hidden"]), select, textarea');
-            if (input) {
-                setTimeout(() => input.focus(), 300);
-            }
-        }
-
-        // ============================================
-        // Enter key advances to next step on text inputs
-        // ============================================
-        document.querySelectorAll('.form-step input[type="text"], .form-step input[type="email"], .form-step input[type="tel"]').forEach(input => {
-            input.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const stepEl = this.closest('.form-step');
-                    const stepNum = parseInt(stepEl.id.replace('step', ''));
-                    if (stepNum < TOTAL_STEPS) {
-                        goToStep(stepNum + 1);
-                    } else {
-                        // Last step: submit the form
-                        form.requestSubmit();
-                    }
-                }
-            });
-        });
-
-        // ============================================
-        // Step navigation
-        // ============================================
-        function goToStep(step) {
-            if (step > currentStep && !validateStep(currentStep)) return;
-            if (step < 1 || step > TOTAL_STEPS) return;
-
-            const currentEl = document.getElementById('step' + currentStep);
-            const nextEl = document.getElementById('step' + step);
-            const direction = step > currentStep ? 1 : -1;
-
-            // Smooth cross-fade and slide transition
-            currentEl.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
-            currentEl.style.opacity = '0';
-            currentEl.style.transform = `translateY(${-8 * direction}px)`;
-
-            updateProgress(step);
-
+        function navigateToReserva() {
+            document.getElementById('splash').classList.add('fade-out');
             setTimeout(() => {
-                currentEl.classList.remove('active');
-                currentEl.style.opacity = '';
-                currentEl.style.transform = '';
-                currentEl.style.transition = '';
-
-                nextEl.classList.add('entering');
-                nextEl.style.opacity = '0';
-                nextEl.style.transform = `translateY(${8 * direction}px)`;
-                nextEl.style.transition = 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
-
-                // Force reflow
-                nextEl.offsetHeight;
-
-                nextEl.classList.remove('entering');
-                nextEl.classList.add('active');
-                nextEl.style.opacity = '1';
-                nextEl.style.transform = 'translateY(0)';
-
-                // Scroll to form top on mobile
-                document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                // Auto-focus the input in the new step
-                focusStepInput(step);
-
-                setTimeout(() => {
-                    nextEl.style.opacity = '';
-                    nextEl.style.transform = '';
-                    nextEl.style.transition = '';
-                }, 250);
-
-            }, 200);
-
-            currentStep = step;
+                location.href = 'reserva.html';
+            }, 400);
         }
 
-        // ============================================
-        // Validation per step
-        // ============================================
-        function validateStep(step) {
-            let valid = true;
-            const stepEl = document.getElementById('step' + step);
-            const required = stepEl.querySelectorAll('[required]');
-
-            required.forEach(field => {
-                const fieldDiv = field.closest('.field');
-                if (!field.value.trim()) {
-                    // Remove and re-add error to retrigger the shake animation
-                    fieldDiv.classList.remove('error');
-                    void fieldDiv.offsetHeight;
-                    fieldDiv.classList.add('error');
-                    valid = false;
-                } else {
-                    fieldDiv.classList.remove('error');
-                }
+        function startReveal() {
+            document.querySelectorAll('.splash-visual, .splash-goat-wrap').forEach(el => {
+                el.classList.add('revealed');
             });
-
-            // Email format check (step 5 is the email step)
-            const emailField = stepEl.querySelector('#email');
-            if (emailField && emailField.value) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(emailField.value)) {
-                    emailField.closest('.field').classList.remove('error');
-                    void emailField.closest('.field').offsetHeight;
-                    emailField.closest('.field').classList.add('error');
-                    valid = false;
-                }
-            }
-
-            return valid;
+            document.getElementById('subtitle').classList.add('visible');
+            document.getElementById('logoLink').classList.add('interactive');
         }
 
-        // Clear errors on input
-        form.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('input', function () {
-                this.closest('.field').classList.remove('error');
-            });
-        });
-
-        // ============================================
-        // Form submission
-        // ============================================
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            if (!validateStep(TOTAL_STEPS)) return;
-
-            const submitBtn = form.querySelector('#step' + TOTAL_STEPS + ' .submit-btn[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span> Enviando...';
-
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData);
-
-            const message = `
-Reservation Details
-───────────────────
-
-Name: ${data.name}
-Email: ${data.email || 'Not provided'}
-Date: ${data.date}
-Time: ${data.time}
-Party: ${data.guests} ${parseInt(data.guests) > 1 ? 'people' : 'person'}
-Phone: ${data.phone || 'Not provided'}
-Invited by: ${data.invitedBy || 'Not provided'}
-Notes: ${data.requests || 'None'}
-
-───────────────────
-Submitted: ${new Date().toLocaleString()}
-            `.trim();
-
-            try {
-                const businessResponse = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        access_key: WEB3FORMS_ACCESS_KEY,
-                        subject: `New reservation — ${data.name}, ${data.date}`,
-                        email: BUSINESS_EMAIL,
-                        from_name: data.name,
-                        message: message,
-                        ...data
-                    })
-                });
-
-                const businessResult = await businessResponse.json();
-
-                if (businessResult.success) {
-                    formView.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-                    formView.style.opacity = '0';
-                    formView.style.transform = 'translateY(-10px)';
-
-                    setTimeout(() => {
-                        formView.style.display = 'none';
-                        successView.classList.add('entering');
-                        successView.offsetHeight;
-                        successView.classList.add('visible');
-
-                        // Animate checkmark path
-                        const path = successView.querySelector('svg polyline');
-                        if (path) {
-                            path.style.strokeDasharray = '50';
-                            path.style.strokeDashoffset = '50';
-                            path.style.transition = 'none';
-                            path.offsetHeight; // reflow
-                            path.style.transition = 'stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s';
-                            path.style.strokeDashoffset = '0';
-                        }
-                    }, 250);
-                } else {
-                    throw new Error('Submission failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Something went wrong. Please try again or contact us directly.');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Reservar';
-            }
-        });
-
-        // ============================================
-        // Reset form
-        // ============================================
-        function showForm() {
-            successView.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-            successView.style.opacity = '0';
-            successView.style.transform = 'translateY(10px)';
-
-            setTimeout(() => {
-                successView.classList.remove('visible', 'entering');
-                successView.style.opacity = '';
-                successView.style.transform = '';
-                successView.style.transition = '';
-
-                form.reset();
-                formView.style.display = 'block';
-                formView.style.opacity = '0';
-                formView.style.transform = 'translateY(-10px)';
-                formView.offsetHeight; // reflow
-                formView.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-                formView.style.opacity = '1';
-                formView.style.transform = 'translateY(0)';
-
-                dateInput.min = today;
-
-                // Reset all steps
-                document.querySelectorAll('.form-step').forEach(s => {
-                    s.classList.remove('active', 'entering');
-                    s.style.opacity = '';
-                    s.style.transform = '';
-                    s.style.transition = '';
-                });
-                document.getElementById('step1').classList.add('active');
-
-                // Reset progress
-                updateProgress(1);
-                currentStep = 1;
-
-                // Reset time selection
-                timeGrid.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
-                timeInput.value = '';
-            }, 150);
-        }
+        setTimeout(startReveal, ANIMATION_DURATION);
     </script>
 </body>
 </html>
