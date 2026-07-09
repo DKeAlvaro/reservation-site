@@ -141,7 +141,7 @@
         // ============================================
         const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/anzest.es/s/AKfycbxH_9RPST7Ik0jR8v9PUwJYZFDZI8778VN1WXLgQHAo2-XVdDaoVCfwNWJMDNmhSNNjoA/exec';
         const TOTAL_STEPS = 6;
-        const MAX_PER_SLOT = 10;
+        const MAX_PER_SLOT = 25;
 
         // ============================================
         // Elements
@@ -192,12 +192,8 @@
         // ============================================
         // Date constraints
         // ============================================
-        const today = new Date().toISOString().split('T')[0];
-        const maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 3);
-
-        dateInput.min = today;
-        dateInput.max = maxDate.toISOString().split('T')[0];
+        dateInput.min = '2026-08-15';
+        dateInput.max = '2026-09-10';
 
         dateInput.addEventListener('change', function() {
             if (this.value) {
@@ -228,9 +224,8 @@
         // Time blocks + slot grid with dot indicators
         // ============================================
         const TIME_BLOCKS = {
-            Manana: { label: 'Mañana', startH: 8, startM: 0, endH: 12, endM: 0 },
-            Tarde:   { label: 'Tarde',   startH: 12, startM: 30, endH: 16, endM: 0 },
-            Noche:   { label: 'Noche',   startH: 16, startM: 30, endH: 20, endM: 0 }
+            Manana: { label: 'Mañana', startH: 8, startM: 0, endH: 13, endM: 0 },
+            Tarde:   { label: 'Tarde',   startH: 13, startM: 0, endH: 20, endM: 0 }
         };
 
         function animateTimeGridChange(className, html) {
@@ -528,7 +523,7 @@
                 formView.style.opacity = '1';
                 formView.style.transform = 'translateY(0)';
 
-                dateInput.min = today;
+                dateInput.min = '2026-08-15';
 
                 // Reset all steps
                 document.querySelectorAll('.form-step').forEach(s => {
