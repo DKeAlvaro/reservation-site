@@ -141,7 +141,17 @@
         // ============================================
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxH_9RPST7Ik0jR8v9PUwJYZFDZI8778VN1WXLgQHAo2-XVdDaoVCfwNWJMDNmhSNNjoA/exec';
         const TOTAL_STEPS = 6;
-        const MAX_PER_SLOT = 25;
+        const MAX_PER_SLOT = 10;
+        const DISPOSABLE_DOMAINS = [
+            'mailinator.com', 'guerrillamail.com', '10minutemail.com',
+            'yopmail.com', 'trashmail.com', 'tempmail.com',
+            'throwaway.email', 'sharklasers.com', 'mailnator.com',
+            'mailexpire.com', 'temp-mail.org', 'maildrop.cc',
+            'getnada.com', 'dispostable.com', 'tempr.email',
+            'mail.tm', 'tempemail.net', 'fakeinbox.com',
+            'spam4.me', 'burnermail.io', 'inboxkitten.com',
+            'moakt.com', 'emailondeck.com'
+        ];
 
         // ============================================
         // Elements
@@ -192,8 +202,8 @@
         // ============================================
         // Date constraints
         // ============================================
-        dateInput.min = '2026-08-15';
-        dateInput.max = '2026-09-10';
+        dateInput.min = '2026-08-23';
+        dateInput.max = '2026-09-15';
 
         dateInput.addEventListener('change', function() {
             if (this.value) {
@@ -215,6 +225,19 @@
             } catch (error) {
                 slotCounts = null;
                 refreshTimeView();
+            }
+        }
+
+        async function checkEmailExists(email) {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'check-email', email: email })
+                });
+                const result = await response.json();
+                return result.exists;
+            } catch (error) {
+                return false;
             }
         }
 
@@ -340,9 +363,36 @@
         // ============================================
         // Step navigation
         // ============================================
-        function goToStep(step) {
+        async function goToStep(step) {
             if (step > currentStep && !validateStep(currentStep)) return;
             if (step < 1 || step > TOTAL_STEPS) return;
+
+            // Email uniqueness check when moving from step 5 to step 6
+            if (currentStep === 5 && step === 6) {
+                const emailField = document.getElementById('email');
+                const email = emailField.value.trim();
+                if (email) {
+                    const nextBtn = document.getElementById('step5').querySelector('.submit-btn');
+                    nextBtn.disabled = true;
+                    nextBtn.innerHTML = '<span class="spinner"></span> Verificando...';
+
+                    const exists = await checkEmailExists(email);
+                    if (exists) {
+                        const errorSpan = emailField.closest('.field').querySelector('.error-msg');
+                        if (errorSpan) errorSpan.textContent = 'Este correo ya tiene una reserva';
+                        emailField.closest('.field').classList.remove('error');
+                        void emailField.closest('.field').offsetHeight;
+                        emailField.closest('.field').classList.add('error');
+
+                        nextBtn.disabled = false;
+                        nextBtn.innerHTML = 'Siguiente';
+                        return;
+                    }
+
+                    nextBtn.disabled = false;
+                    nextBtn.innerHTML = 'Siguiente';
+                }
+            }
 
             const currentEl = document.getElementById('step' + currentStep);
             const nextEl = document.getElementById('step' + step);
@@ -412,15 +462,27 @@
                 }
             });
 
-            // Email format check (step 5 is the email step)
+            // Email validation (step 5 is the email step)
             const emailField = stepEl.querySelector('#email');
             if (emailField && emailField.value) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(emailField.value)) {
+                const email = emailField.value.trim();
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+                const errorSpan = emailField.closest('.field').querySelector('.error-msg');
+                if (!emailRegex.test(email)) {
+                    if (errorSpan) errorSpan.textContent = 'Por favor, introduzca un correo electrónico válido';
                     emailField.closest('.field').classList.remove('error');
                     void emailField.closest('.field').offsetHeight;
                     emailField.closest('.field').classList.add('error');
                     valid = false;
+                } else {
+                    const domain = email.split('@')[1].toLowerCase();
+                    if (DISPOSABLE_DOMAINS.includes(domain)) {
+                        if (errorSpan) errorSpan.textContent = 'No se permiten correos temporales o desechables';
+                        emailField.closest('.field').classList.remove('error');
+                        void emailField.closest('.field').offsetHeight;
+                        emailField.closest('.field').classList.add('error');
+                        valid = false;
+                    }
                 }
             }
 
@@ -431,6 +493,10 @@
         form.querySelectorAll('input, select, textarea').forEach(field => {
             field.addEventListener('input', function () {
                 this.closest('.field').classList.remove('error');
+                const errorSpan = this.closest('.field').querySelector('.error-msg');
+                if (errorSpan && field.id === 'email') {
+                    errorSpan.textContent = 'Por favor, introduzca un correo electrónico válido';
+                }
             });
         });
 
@@ -488,6 +554,16 @@
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = 'Reservar';
                     return;
+                } else if (result.error === 'duplicate-email') {
+                    alert('Este correo electrónico ya tiene una reserva.\n\nSi crees que es un error, contáctanos.');
+                    goToStep(5);
+                    const emailField = document.getElementById('email');
+                    const errorSpan = emailField.closest('.field').querySelector('.error-msg');
+                    if (errorSpan) errorSpan.textContent = 'Este correo ya tiene una reserva';
+                    emailField.closest('.field').classList.add('error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Reservar';
+                    return;
                 } else {
                     throw new Error('Submission failed');
                 }
@@ -523,7 +599,7 @@
                 formView.style.opacity = '1';
                 formView.style.transform = 'translateY(0)';
 
-                dateInput.min = '2026-08-15';
+                dateInput.min = '2026-08-23';
 
                 // Reset all steps
                 document.querySelectorAll('.form-step').forEach(s => {
