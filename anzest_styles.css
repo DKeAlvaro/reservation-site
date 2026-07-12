@@ -996,24 +996,28 @@ a:hover {
     height: auto;
     display: block;
     max-width: 100%;
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+    filter: blur(6px);
+    animation: logoEntrance 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.splash-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    visibility: hidden;
-}
-
-.splash-visual.revealed .splash-img {
-    visibility: hidden;
-}
-
-.splash-visual.revealed .splash-overlay {
-    visibility: visible;
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(20px);
+        filter: blur(6px);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
 }
 
 .splash-subtitle {
@@ -1047,24 +1051,23 @@ a:hover {
     width: 20px;
     height: 20px;
     display: block;
+    opacity: 0;
+    animation: goatEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
 }
 
-.goat-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    visibility: hidden;
-}
-
-.splash-goat-wrap.revealed .splash-goat {
-    visibility: hidden;
-}
-
-.splash-goat-wrap.revealed .goat-overlay {
-    visibility: visible;
+@keyframes goatEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(-120deg);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1.1) rotate(8deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
 }
 
 /* Medium screens */

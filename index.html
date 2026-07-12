@@ -16,14 +16,12 @@
         <div class="splash-inner">
             <div class="splash-visual" id="logoLink" onclick="navigateToReserva()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')navigateToReserva()">
                 <div class="splash-img-wrap">
-                    <img class="splash-img" id="logoGif" src="images/logo-anzest.gif" alt="Anzest">
-                    <img class="splash-overlay" id="logoSvg" src="images/logo-anzest.svg" alt="Anzest">
+                    <img class="splash-img" id="logoSvg" src="images/logo-anzest.svg" alt="Anzest">
                 </div>
             </div>
             <p class="splash-subtitle" id="subtitle">
-                <span class="splash-goat-wrap" id="goatWrap">
-                    <img class="splash-goat" id="goatGif" src="images/black-goat.gif" alt="">
-                    <img class="splash-goat goat-overlay" id="goatSvg" src="images/black-goat.svg" alt="">
+                <span class="splash-goat-wrap">
+                    <img class="splash-goat" id="goatSvg" src="images/black-goat.svg" alt="">
                 </span>
                 Inauguración Friends &amp; Family
             </p>
@@ -31,8 +29,6 @@
     </div>
 
     <script>
-        const ANIMATION_DURATION = 3430;
-
         function navigateToReserva() {
             document.getElementById('splash').classList.add('fade-out');
             setTimeout(() => {
@@ -40,15 +36,10 @@
             }, 400);
         }
 
-        function startReveal() {
-            document.querySelectorAll('.splash-visual, .splash-goat-wrap').forEach(el => {
-                el.classList.add('revealed');
-            });
+        setTimeout(() => {
             document.getElementById('subtitle').classList.add('visible');
             document.getElementById('logoLink').classList.add('interactive');
-        }
-
-        setTimeout(startReveal, ANIMATION_DURATION);
+        }, 1000);
     </script>
 </body>
 </html>
