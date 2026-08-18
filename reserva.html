@@ -61,7 +61,7 @@
                         <div class="date-field-wrapper">
                             <input type="date" id="date" name="date" required>
                         </div>
-                        <span class="error-msg">Seleccione una fecha</span>
+                        <span class="error-msg" id="dateError">Seleccione una fecha</span>
                     </div>
                     <button type="button" class="btn btn-dark submit-btn" onclick="goToStep(2)">Siguiente</button>
                 </div>
@@ -174,6 +174,15 @@
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxH_9RPST7Ik0jR8v9PUwJYZFDZI8778VN1WXLgQHAo2-XVdDaoVCfwNWJMDNmhSNNjoA/exec';
         const TOTAL_STEPS = 6;
         const MAX_PER_SLOT = 10;
+        const DEFAULT_MIN_DATE = '2026-08-23';
+        const DEFAULT_MAX_DATE = '2026-09-15';
+        let bookingConfig = {
+            minDate: DEFAULT_MIN_DATE,
+            maxDate: DEFAULT_MAX_DATE,
+            blockedDays: [],
+            blockedSlots: {},
+            blockedTimesEveryDay: []
+        };
         const DISPOSABLE_DOMAINS = [
             'mailinator.com', 'guerrillamail.com', '10minutemail.com',
             'yopmail.com', 'trashmail.com', 'tempmail.com',
@@ -231,16 +240,81 @@
         updateProgress(1);
 
         // ============================================
-        // Date constraints
+        // Date constraints + Sheet config
         // ============================================
-        dateInput.min = '2026-08-23';
-        dateInput.max = '2026-09-15';
+        function applyDateBounds() {
+            dateInput.min = bookingConfig.minDate || DEFAULT_MIN_DATE;
+            dateInput.max = bookingConfig.maxDate || DEFAULT_MAX_DATE;
+        }
+        applyDateBounds();
+        fetchBookingConfig();
+
+        function isDateBlocked(date) {
+            if (!date) return false;
+            if (bookingConfig.blockedDays.indexOf(date) !== -1) return true;
+            if (bookingConfig.minDate && date < bookingConfig.minDate) return true;
+            if (bookingConfig.maxDate && date > bookingConfig.maxDate) return true;
+            return false;
+        }
+
+        function isTimeBlocked(date, time) {
+            if (!date || !time) return false;
+            if (isDateBlocked(date)) return true;
+            if (bookingConfig.blockedTimesEveryDay.indexOf(time) !== -1) return true;
+            var daySlots = bookingConfig.blockedSlots[date];
+            return !!(daySlots && daySlots.indexOf(time) !== -1);
+        }
+
+        function setDateError(message) {
+            var span = document.getElementById('dateError');
+            var field = dateInput.closest('.field');
+            if (span && message) span.textContent = message;
+            if (!message) {
+                field.classList.remove('error');
+                if (span) span.textContent = 'Seleccione una fecha';
+                return;
+            }
+            field.classList.remove('error');
+            void field.offsetHeight;
+            field.classList.add('error');
+        }
 
         dateInput.addEventListener('change', function() {
-            if (this.value) {
-                fetchReservations(this.value);
+            timeInput.value = '';
+            selectedBlock = null;
+            if (!this.value) return;
+            if (isDateBlocked(this.value)) {
+                setDateError('Este día no está disponible');
+                slotCounts = null;
+                refreshTimeView();
+                return;
             }
+            setDateError('');
+            fetchReservations(this.value);
         });
+
+        async function fetchBookingConfig() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'config' })
+                });
+                const result = await response.json();
+                if (!result || !result.success) return;
+                if (result.minDate) bookingConfig.minDate = result.minDate;
+                if (result.maxDate) bookingConfig.maxDate = result.maxDate;
+                bookingConfig.blockedDays = result.blockedDays || [];
+                bookingConfig.blockedSlots = result.blockedSlots || {};
+                bookingConfig.blockedTimesEveryDay = result.blockedTimesEveryDay || [];
+                applyDateBounds();
+                if (dateInput.value && isDateBlocked(dateInput.value)) {
+                    setDateError('Este día no está disponible');
+                }
+                refreshTimeView();
+            } catch (error) {
+                // Script aún no tiene action config: se quedan los valores por defecto
+            }
+        }
 
         async function fetchReservations(date) {
             try {
@@ -322,8 +396,10 @@
                     const label = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
                     const slotCount = hasCounts ? (slotCounts[label] || 0) : 0;
                     const isFull = hasCounts && slotCount >= MAX_PER_SLOT;
+                    const blocked = isTimeBlocked(dateInput.value, label);
+                    const unavailable = isFull || blocked;
 
-                    html += `<button type="button" class="time-btn${isFull ? ' full' : ''}" data-time="${label}"${isFull ? ' disabled' : ''}>${label}</button>`;
+                    html += `<button type="button" class="time-btn${unavailable ? ' full' : ''}" data-time="${label}"${unavailable ? ' disabled' : ''}>${label}</button>`;
                 }
             }
             return html;
@@ -468,15 +544,30 @@
             required.forEach(field => {
                 const fieldDiv = field.closest('.field');
                 if (!field.value.trim()) {
-                    // Remove and re-add error to retrigger the shake animation
-                    fieldDiv.classList.remove('error');
-                    void fieldDiv.offsetHeight;
-                    fieldDiv.classList.add('error');
+                    if (field.id === 'date') setDateError('Seleccione una fecha');
+                    else {
+                        fieldDiv.classList.remove('error');
+                        void fieldDiv.offsetHeight;
+                        fieldDiv.classList.add('error');
+                    }
                     valid = false;
                 } else {
                     fieldDiv.classList.remove('error');
                 }
             });
+
+            if (step === 1 && dateInput.value && isDateBlocked(dateInput.value)) {
+                setDateError('Este día no está disponible');
+                valid = false;
+            }
+
+            if (step === 3 && timeInput.value && isTimeBlocked(dateInput.value, timeInput.value)) {
+                const fieldDiv = timeInput.closest('.field');
+                fieldDiv.classList.remove('error');
+                void fieldDiv.offsetHeight;
+                fieldDiv.classList.add('error');
+                valid = false;
+            }
 
             // Email validation (step 5 is the email step)
             const emailField = stepEl.querySelector('#email');
@@ -563,6 +654,13 @@
                             path.style.strokeDashoffset = '0';
                         }
                     }, 250);
+                } else if (result.error === 'blocked') {
+                    alert((result.message || 'Esa fecha u hora no está disponible.') + '\n\nPor favor, selecciona otra.');
+                    goToStep(1);
+                    fetchBookingConfig();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Reservar';
+                    return;
                 } else if (result.error === 'full') {
                     alert(result.message + '\n\nPor favor, selecciona otro horario.');
                     goToStep(3);
@@ -615,7 +713,9 @@
                 formView.style.opacity = '1';
                 formView.style.transform = 'translateY(0)';
 
-                dateInput.min = '2026-08-23';
+                applyDateBounds();
+                setDateError('');
+                fetchBookingConfig();
 
                 // Reset all steps
                 document.querySelectorAll('.form-step').forEach(s => {
