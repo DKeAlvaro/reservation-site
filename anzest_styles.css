@@ -3,6 +3,14 @@
  * Extracted from Figma Prototype (Visual Analysis & Best Practices)
  */
 
+@font-face {
+    font-family: 'Cascadia Code Variable';
+    src: url('fonts/cascadia-code-latin-wght-normal.woff2') format('woff2-variations');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: block;
+}
+
 :root {
     /* Colors */
     --color-primary: #000000; /* Assumed from text and main elements */
@@ -75,6 +83,15 @@ body {
     background-color: var(--color-secondary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+html.boot-pending body {
+    opacity: 0;
+}
+
+html.boot-ready body {
+    opacity: 1;
+    transition: opacity 0.35s ease;
 }
 
 /* Typography Components */
@@ -424,24 +441,9 @@ a:hover {
     gap: var(--spacing-sm);
 }
 
-/* Staggered entrance for fields within a step */
-.form-step.active .field:nth-child(1) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both; }
-.form-step.active .field:nth-child(2) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
-.form-step.active .field:nth-child(3) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
-.form-step.active .field:nth-child(4) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
-.form-step.active .field:nth-child(5) { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.20s both; }
-.form-step.active .step-nav { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
-.form-step.active .submit-btn:only-child { animation: fieldReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
-
 @keyframes fieldReveal {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .field label {
@@ -570,34 +572,28 @@ a:hover {
     transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Form steps */
+/* Form steps — one fade for the whole step, not per-field */
 .form-step {
     display: none;
     opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 }
 
-.form-step.active {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.form-step.entering {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    opacity: 0;
-}
-
+.form-step.active,
 .form-step.leaving {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-lg);
+}
+
+.form-step.active {
+    opacity: 1;
+    animation: fieldReveal 0.28s ease both;
+}
+
+.form-step.leaving {
     opacity: 0;
+    animation: none;
+    transition: opacity 0.18s ease;
 }
 
 .step-nav {
@@ -944,8 +940,11 @@ a:hover {
     justify-content: center;
     min-height: 100vh;
     padding: var(--spacing-lg);
-    animation: splashFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+html.boot-ready .splash {
+    animation: splashFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .splash.fade-out {
@@ -998,7 +997,9 @@ a:hover {
     max-width: 100%;
     opacity: 0;
     transform: scale(0.85) translateY(20px);
-    filter: blur(6px);
+}
+
+html.boot-ready .splash-img {
     animation: logoEntrance 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -1006,17 +1007,14 @@ a:hover {
     0% {
         opacity: 0;
         transform: scale(0.85) translateY(20px);
-        filter: blur(6px);
     }
     50% {
         opacity: 1;
         transform: scale(1) translateY(0);
-        filter: blur(0);
     }
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
-        filter: blur(0);
     }
 }
 
@@ -1052,6 +1050,9 @@ a:hover {
     height: 20px;
     display: block;
     opacity: 0;
+}
+
+html.boot-ready .splash-goat {
     animation: goatEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
 }
 
@@ -1168,11 +1169,5 @@ a:hover {
     }
 }
 
-/* Accessibility: respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
+/* Do not kill animations: old Windows "Show animations off" sets
+   prefers-reduced-motion and would make the site look frozen. */

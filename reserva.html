@@ -1,13 +1,46 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="boot-pending">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inauguración Anzest Friends & Family</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-code/index.css">
+    <link rel="preload" href="fonts/cascadia-code-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="images/logo-anzest.svg" as="image">
+    <link rel="preload" href="images/black-goat.svg" as="image">
     <link rel="stylesheet" href="anzest_styles.css">
-    <style>body{animation:fadeIn .4s ease both}@keyframes fadeIn{from{opacity:0}to{opacity:1}}</style>
+    <noscript><style>html.boot-pending body{opacity:1}</style></noscript>
+    <script>
+        (function () {
+            var done = false;
+            function ready() {
+                if (done) return;
+                done = true;
+                document.documentElement.classList.remove('boot-pending');
+                document.documentElement.classList.add('boot-ready');
+                document.dispatchEvent(new Event('bootready'));
+            }
+            function waitAssets() {
+                var imgs = Array.prototype.map.call(document.images, function (img) {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(function (res) {
+                        img.addEventListener('load', res);
+                        img.addEventListener('error', res);
+                    });
+                });
+                var fonts = (document.fonts && document.fonts.ready)
+                    ? document.fonts.ready.catch(function () {})
+                    : Promise.resolve();
+                Promise.all([fonts].concat(imgs)).then(ready);
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', waitAssets);
+            } else {
+                waitAssets();
+            }
+            setTimeout(ready, 2500);
+        })();
+    </script>
 </head>
 <body>
     <div class="form-card">
@@ -167,9 +200,16 @@
         let currentStep = 1;
         let slotCounts = null;
         let selectedBlock = null;
+        let stepBusy = false;
 
-        // Initialize focus for step 1
-        setTimeout(() => focusStepInput(1), 300);
+        function startFormChrome() {
+            setTimeout(() => focusStepInput(1), 300);
+        }
+        if (document.documentElement.classList.contains('boot-ready')) {
+            startFormChrome();
+        } else {
+            document.addEventListener('bootready', startFormChrome, { once: true });
+        }
 
         // ============================================
         // Progress bar and Title
@@ -184,17 +224,9 @@
         };
 
         function updateProgress(step) {
-            const pct = (step / TOTAL_STEPS) * 100;
-            progressFill.style.width = pct + '%';
-            
+            progressFill.style.width = (step / TOTAL_STEPS) * 100 + '%';
             const titleEl = document.querySelector('#formHeader h1');
-            if (titleEl.textContent !== stepTitles[step]) {
-                titleEl.style.opacity = '0';
-                setTimeout(() => {
-                    titleEl.textContent = stepTitles[step];
-                    titleEl.style.opacity = '1';
-                }, 200);
-            }
+            titleEl.textContent = stepTitles[step];
         }
         updateProgress(1);
 
@@ -363,8 +395,10 @@
         // Step navigation
         // ============================================
         async function goToStep(step) {
+            if (stepBusy) return;
             if (step > currentStep && !validateStep(currentStep)) return;
             if (step < 1 || step > TOTAL_STEPS) return;
+            if (step === currentStep) return;
 
             // Email uniqueness check when moving from step 5 to step 6
             if (currentStep === 5 && step === 6) {
@@ -395,49 +429,32 @@
 
             const currentEl = document.getElementById('step' + currentStep);
             const nextEl = document.getElementById('step' + step);
-            const direction = step > currentStep ? 1 : -1;
+            stepBusy = true;
 
-            // Smooth cross-fade and slide transition
-            currentEl.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
-            currentEl.style.opacity = '0';
-            currentEl.style.transform = `translateY(${-8 * direction}px)`;
-
-            updateProgress(step);
-
-            setTimeout(() => {
-                currentEl.classList.remove('active');
+            function showNext() {
+                currentEl.classList.remove('active', 'leaving');
                 currentEl.style.opacity = '';
                 currentEl.style.transform = '';
                 currentEl.style.transition = '';
-
-                nextEl.classList.add('entering');
-                nextEl.style.opacity = '0';
-                nextEl.style.transform = `translateY(${8 * direction}px)`;
-                nextEl.style.transition = 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
-
-                // Force reflow
-                nextEl.offsetHeight;
-
                 nextEl.classList.remove('entering');
                 nextEl.classList.add('active');
-                nextEl.style.opacity = '1';
-                nextEl.style.transform = 'translateY(0)';
-
-                // Scroll to form top on mobile
-                document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-                // Auto-focus the input in the new step
+                updateProgress(step);
+                currentStep = step;
+                stepBusy = false;
                 focusStepInput(step);
+            }
 
-                setTimeout(() => {
-                    nextEl.style.opacity = '';
-                    nextEl.style.transform = '';
-                    nextEl.style.transition = '';
-                }, 250);
+            currentEl.classList.add('leaving');
+            currentEl.classList.remove('active');
 
-            }, 200);
-
-            currentStep = step;
+            let swapped = false;
+            function swapOnce() {
+                if (swapped) return;
+                swapped = true;
+                showNext();
+            }
+            currentEl.addEventListener('transitionend', swapOnce, { once: true });
+            setTimeout(swapOnce, 200);
         }
 
         // ============================================

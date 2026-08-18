@@ -1,15 +1,48 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="boot-pending">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anzest Friends & Family</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preload" href="fonts/cascadia-code-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="images/logo-anzest.svg" as="image">
     <link rel="preload" href="images/black-goat.svg" as="image">
     <link rel="prefetch" href="reserva.html">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/cascadia-code/index.css">
+    <link rel="prefetch" href="anzest_styles.css">
     <link rel="stylesheet" href="anzest_styles.css">
+    <noscript><style>html.boot-pending body{opacity:1}</style></noscript>
+    <script>
+        (function () {
+            var done = false;
+            function ready() {
+                if (done) return;
+                done = true;
+                document.documentElement.classList.remove('boot-pending');
+                document.documentElement.classList.add('boot-ready');
+                document.dispatchEvent(new Event('bootready'));
+            }
+            function waitAssets() {
+                var imgs = Array.prototype.map.call(document.images, function (img) {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(function (res) {
+                        img.addEventListener('load', res);
+                        img.addEventListener('error', res);
+                    });
+                });
+                var fonts = (document.fonts && document.fonts.ready)
+                    ? document.fonts.ready.catch(function () {})
+                    : Promise.resolve();
+                Promise.all([fonts].concat(imgs)).then(ready);
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', waitAssets);
+            } else {
+                waitAssets();
+            }
+            setTimeout(ready, 2500);
+        })();
+    </script>
 </head>
 <body>
     <div class="splash" id="splash">
@@ -29,17 +62,28 @@
     </div>
 
     <script>
+        var reservaReady = fetch('reserva.html', { cache: 'force-cache' }).catch(function () {});
+
         function navigateToReserva() {
-            document.getElementById('splash').classList.add('fade-out');
-            setTimeout(() => {
+            var splash = document.getElementById('splash');
+            splash.classList.add('fade-out');
+            var minFade = new Promise(function (resolve) { setTimeout(resolve, 280); });
+            Promise.all([minFade, reservaReady]).then(function () {
                 location.href = 'reserva.html';
-            }, 400);
+            });
         }
 
-        setTimeout(() => {
-            document.getElementById('subtitle').classList.add('visible');
-            document.getElementById('logoLink').classList.add('interactive');
-        }, 1000);
+        function revealSplashChrome() {
+            setTimeout(() => {
+                document.getElementById('subtitle').classList.add('visible');
+                document.getElementById('logoLink').classList.add('interactive');
+            }, 1000);
+        }
+        if (document.documentElement.classList.contains('boot-ready')) {
+            revealSplashChrome();
+        } else {
+            document.addEventListener('bootready', revealSplashChrome, { once: true });
+        }
     </script>
 </body>
 </html>
